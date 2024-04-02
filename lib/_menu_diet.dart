@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_tubes/_artikel.dart';
+import 'package:flutter_tubes/_page_awal.dart';
+import 'package:flutter_tubes/_profile.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,27 +19,27 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'HealthSis'),
+      home: const MenuDiet(title: 'HealthSis'),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class MenuDiet extends StatefulWidget {
+  const MenuDiet({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MenuDiet> createState() => _MenuDiet();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MenuDiet extends State<MenuDiet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.red,
+          backgroundColor: Color.fromARGB(255, 255, 169, 154),
           title: Text(widget.title),
           actions: <Widget>[
             IconButton(
@@ -52,30 +55,102 @@ class _MyHomePageState extends State<MyHomePage> {
             padding: EdgeInsets.zero,
             children: <Widget>[
               const UserAccountsDrawerHeader(
-                accountName:
-                    Text('Iqnaz Diningrat'), // Ganti dengan nama pengguna
-                accountEmail:
-                    Text('Diningratpride@email'), // Ganti dengan email pengguna
+                accountName: Text('Iqnaz Diningrat',
+                    style: TextStyle(
+                        color: Colors.black)),
+                accountEmail: Text('Diningratpride@email',
+                    style: TextStyle(
+                        color: Colors.black)),
                 currentAccountPicture: CircleAvatar(
-                  radius: 60, // Atur radius lingkaran foto profil
+                  radius: 60,
                   backgroundImage: AssetImage(''),
+                ),
+                decoration: BoxDecoration(
+                  color: Color.fromARGB(
+                      255, 255, 169, 154),
                 ),
               ),
               ListTile(
                 title: const Text('Profile'),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (BuildContext context) {
+                      return const Profile(title: 'HealthSis');
+                    }),
+                  );
+                },
               ),
               ListTile(
                 title: const Text('Menu Diet'),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (BuildContext context) {
+                      return const MenuDiet(title: 'HealthSis');
+                    }),
+                  );
+                },
               ),
               ListTile(
                 title: const Text('Artikel'),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (BuildContext context) {
+                      return const Artikel(title: 'HealthSis');
+                    }),
+                  );
+                },
               ),
               ListTile(
                 title: const Text('Timeline'),
                 onTap: () {},
+              ),
+              const Divider(),
+              ListTile(
+                title: const Text(
+                  'Logout',
+                  style: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20),
+                ),
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext dialogContext) {
+                      return AlertDialog(
+                        title: const Text('Logout Confirmation'),
+                        content: const Text('Are you sure you want to logout?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(dialogContext).pop();
+                            },
+                            child: const Text('No'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(dialogContext).pop();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) {
+                                  return PageAwal();
+                                }),
+                              );
+                            },
+                            child: const Text(
+                              'Yes',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
               ),
             ],
           ),
@@ -111,7 +186,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     items: [
                       Container(
                         margin: const EdgeInsets.all(5.0),
-                        color: Colors.red,
+                        color: Color.fromARGB(255, 255, 169, 154),
                         child: const Center(
                           child: Text(
                             'Slide 1',
@@ -182,7 +257,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ],
                         )),
                     Card(
-                        color: Colors.red,
+                        color: Color.fromARGB(255, 255, 169, 154),
                         child: ListView(
                           children: <Widget>[
                             const Padding(

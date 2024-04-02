@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tubes/_login.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,36 +16,27 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'HealthSis'),
+      home: const Register(title: 'HealthSis'),
       debugShowCheckedModeBanner: false,
-
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class Register extends StatefulWidget {
+  const Register({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<Register> createState() => _Register();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  void pressButtonLogin() {
-    print('Saya di Klik Login');
-  }
-
-  void pressButtonDaftar() {
-    print('Saya di Klik Daftar');
-  }
-
+class _Register extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.red,
+          backgroundColor: Color.fromARGB(255, 255, 169, 154),
           title: Text(widget.title),
         ),
         body: Padding(
@@ -55,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Center(
                   child: ListView(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 30.0, vertical: 75.0),
+                        horizontal: 30.0, vertical: 20.0),
                     children: <Widget>[
                       const Center(
                         child: Text(
@@ -125,21 +117,48 @@ class _MyHomePageState extends State<MyHomePage> {
                       const SizedBox(
                         height: 20.0,
                       ),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 0),
+                        child: TextField(
+                          obscureText: true,
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Re-Password'),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20.0,
+                      ),
                       ElevatedButton(
-                          onPressed: pressButtonDaftar,
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                return const Login(title: 'HealthSis');
+                              }),
+                            );
+                          },
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.red,
                               foregroundColor: Colors.white),
                           child: const Text('Daftar')),
-                      const SizedBox(
-                        height: 20.0,
-                      ),
-                      const Center(
-                        child: Text(
-                          'Sudah Mempunyai Akun',
-                          style:
-                              TextStyle(decoration: TextDecoration.underline),
+                      ListTile(
+                        title: const Center(
+                          child: Text(
+                            'Sudah Mempunyai Akun',
+                            style:
+                                TextStyle(decoration: TextDecoration.underline),
+                          ),
                         ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (BuildContext context) {
+                              return const Login(title: 'HealthSis');
+                            }),
+                          );
+                        },
                       ),
                     ],
                   ),
