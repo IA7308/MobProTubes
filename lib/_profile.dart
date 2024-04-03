@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tubes/_artikel.dart';
+import 'package:flutter_tubes/_edit_profile.dart';
+import 'package:flutter_tubes/_menu_diet.dart';
 import 'package:flutter_tubes/_dashboard.dart';
+import 'package:flutter_tubes/_page_awal.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +20,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const Profile(title: 'Edit Profile'),
+      home: const Profile(title: 'HealthSis'),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -28,16 +32,29 @@ class Profile extends StatefulWidget {
   final String title;
 
   @override
-  State<Profile> createState() => _ProfileState();
+  State<Profile> createState() => _Profile();
 }
 
-class _ProfileState extends State<Profile> {
+class _Profile extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.red,
+        backgroundColor: Color.fromARGB(255, 255, 169, 154),
         title: Text(widget.title),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.home),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (BuildContext context) {
+                  return const Dashboard(title: 'HealthSis');
+                }),
+              );
+            },
+          ),
+        ],
       ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -48,17 +65,24 @@ class _ProfileState extends State<Profile> {
             children: [
               Row(
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: () {
-                      // Aksi saat tombol back ditekan
-                    },
+                  const Text(
+                    'Profile',
+                    style: TextStyle(
+                      fontSize: 25.0,
+                      fontFamily: 'Times New Roman',
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const Spacer(),
                   IconButton(
-                    icon: const Icon(Icons.save),
+                    icon: const Icon(Icons.edit),
                     onPressed: () {
-                      // Aksi saat tombol save ditekan
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (BuildContext context) {
+                          return const EditProfile(title: 'HealthSis');
+                        }),
+                      );
                     },
                   ),
                 ],
@@ -72,25 +96,41 @@ class _ProfileState extends State<Profile> {
                 ),
               ),
               const SizedBox(height: 20.0),
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Username'),
-              ),
-              const SizedBox(height: 20.0),
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'No HP'),
-              ),
-              const SizedBox(height: 20.0),
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Status'),
-              ),
-              const SizedBox(height: 20.0),
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Umur'),
-                keyboardType: TextInputType.datetime,
-              ),
-              const SizedBox(height: 20.0),
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Note'),
+              ListView(
+                shrinkWrap: true,
+                children: const [
+                  Card(
+                    child: ListTile(
+                      leading: Icon(Icons.person),
+                      title: Text('Username'),
+                    ),
+                  ),
+                  Card(
+                    child: ListTile(
+                      leading: Icon(Icons.phone),
+                      title: Text('No HP'),
+                    ),
+                  ),
+                  Card(
+                    child: ListTile(
+                      leading: Icon(Icons.info),
+                      title: Text('Status'),
+                    ),
+                  ),
+                  Card(
+                    child: ListTile(
+                      leading:
+                          Icon(Icons.calendar_today),
+                      title: Text('Umur'),
+                    ),
+                  ),
+                  Card(
+                    child: ListTile(
+                      leading: Icon(Icons.note),
+                      title: Text('Note'),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -98,41 +138,104 @@ class _ProfileState extends State<Profile> {
       ),
       drawer: Drawer(
         child: Container(
-          color: const Color(0xFFC394E8),
           child: Column(
             children: [
               const UserAccountsDrawerHeader(
-                accountName:
-                    Text('Iqnaz Diningrat'), // Ganti dengan nama pengguna
-                accountEmail:
-                    Text('Diningratpride@email'), // Ganti dengan email pengguna
+                accountName: Text('Iqnaz Diningrat',
+                    style: TextStyle(
+                        color: Colors.black)),
+                accountEmail: Text('Diningratpride@email',
+                    style: TextStyle(
+                        color: Colors.black)),
                 currentAccountPicture: CircleAvatar(
-                  radius: 60, // Atur radius lingkaran foto profil
+                  radius: 60,
                   backgroundImage: AssetImage(''),
+                ),
+                decoration: BoxDecoration(
+                  color: Color.fromARGB(
+                      255, 255, 169, 154),
                 ),
               ),
               ListTile(
-                title: const Text('NO HP'),
+                title: const Text('Profile'),
                 onTap: () {
-                  // Tambahkan aksi saat item dipilih
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (BuildContext context) {
+                      return const Profile(title: 'HealthSis');
+                    }),
+                  );
                 },
               ),
               ListTile(
-                title: const Text('Status'),
+                title: const Text('Menu Diet'),
                 onTap: () {
-                  // Tambahkan aksi saat item dipilih
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (BuildContext context) {
+                      return const MenuDiet(title: 'HealthSis');
+                    }),
+                  );
                 },
               ),
               ListTile(
-                title: const Text('Umur'),
+                title: const Text('Artikel'),
                 onTap: () {
-                  // Tambahkan aksi saat item dipilih
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (BuildContext context) {
+                      return const Artikel(title: 'HealthSis');
+                    }),
+                  );
                 },
               ),
               ListTile(
-                title: const Text('Note'),
+                title: const Text('Timeline'),
+                onTap: () {},
+              ),
+              const Divider(),
+              ListTile(
+                title: const Text(
+                  'Logout',
+                  style: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20),
+                ),
                 onTap: () {
-                  // Tambahkan aksi saat item dipilih
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext dialogContext) {
+                      return AlertDialog(
+                        title: const Text('Logout Confirmation'),
+                        content: const Text('Are you sure you want to logout?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(dialogContext).pop();
+                            },
+                            child: const Text('No'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(dialogContext).pop();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) {
+                                  return PageAwal();
+                                }),
+                              );
+                            },
+                            child: const Text(
+                              'Yes',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 },
               ),
               TextButton(

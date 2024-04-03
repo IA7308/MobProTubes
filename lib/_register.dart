@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tubes/_login.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,7 +18,6 @@ class MyApp extends StatelessWidget {
       ),
       home: const Register(title: 'HealthSis'),
       debugShowCheckedModeBanner: false,
-
     );
   }
 }
@@ -28,23 +28,15 @@ class Register extends StatefulWidget {
   final String title;
 
   @override
-  State<Register> createState() => _RegisterState();
+  State<Register> createState() => _Register();
 }
 
-class _RegisterState extends State<Register> {
-  void pressButtonLogin() {
-    print('Saya di Klik Login');
-  }
-
-  void pressButtonDaftar() {
-    print('Saya di Klik Daftar');
-  }
-
+class _Register extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.red,
+          backgroundColor: Color.fromARGB(255, 255, 169, 154),
           title: Text(widget.title),
         ),
         body: Padding(
@@ -55,7 +47,7 @@ class _RegisterState extends State<Register> {
                 child: Center(
                   child: ListView(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 30.0, vertical: 75.0),
+                        horizontal: 30.0, vertical: 20.0),
                     children: <Widget>[
                       const Center(
                         child: Text(
@@ -125,21 +117,48 @@ class _RegisterState extends State<Register> {
                       const SizedBox(
                         height: 20.0,
                       ),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 0),
+                        child: TextField(
+                          obscureText: true,
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Re-Password'),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20.0,
+                      ),
                       ElevatedButton(
-                          onPressed: pressButtonDaftar,
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                return const Login(title: 'HealthSis');
+                              }),
+                            );
+                          },
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.red,
                               foregroundColor: Colors.white),
                           child: const Text('Daftar')),
-                      const SizedBox(
-                        height: 20.0,
-                      ),
-                      const Center(
-                        child: Text(
-                          'Sudah Mempunyai Akun',
-                          style:
-                              TextStyle(decoration: TextDecoration.underline),
+                      ListTile(
+                        title: const Center(
+                          child: Text(
+                            'Sudah Mempunyai Akun',
+                            style:
+                                TextStyle(decoration: TextDecoration.underline),
+                          ),
                         ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (BuildContext context) {
+                              return const Login(title: 'HealthSis');
+                            }),
+                          );
+                        },
                       ),
                     ],
                   ),

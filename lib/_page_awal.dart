@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tubes/_login.dart';
+import 'package:flutter_tubes/_register.dart';
 
 void main() {
   runApp(MyApp());
@@ -9,18 +11,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: MyHomePage(),
+      home: PageAwal(),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class PageAwal extends StatefulWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _PageAwal createState() => _PageAwal();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _PageAwal extends State<PageAwal> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,15 +32,15 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             //Image.asset('', scale: 3),
-            Text(
+            const Text(
               'Welcome',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 20),
-            Text(
+            const SizedBox(height: 20),
+            const Text(
               'Tempat terbaik untuk mengeksplorasi dunia kesehatan dan diet yang seimbang!',
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -46,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 fontWeight: FontWeight.w500,
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Container(
               width: 200,
               height: 45,
@@ -56,8 +58,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
                 ),
-                onPressed: () {},
-                child: Text(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (BuildContext context) {
+                      return const Register(title: 'HealthSis');
+                    }),
+                  );
+                },
+                child: const Text(
                   'Register',
                   style: TextStyle(
                       color: Colors.black,
@@ -66,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Container(
               width: 200,
               height: 45,
@@ -76,8 +85,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
                 ),
-                onPressed: () {},
-                child: Text(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (BuildContext context) {
+                      return const Login(title: 'HealthSis');
+                    }),
+                  );
+                },
+                child: const Text(
                   'Login',
                   style: TextStyle(
                       color: Colors.black,
