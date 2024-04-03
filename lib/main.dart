@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tubes/_dashboard.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,7 +35,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   
   void pressButtonLogin() {
-    print('Saya di Klik Login');
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const Dashboard(title: 'Dashboard'),));
   }
 
   void pressButtonDaftar() {

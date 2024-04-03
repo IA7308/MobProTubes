@@ -15,23 +15,23 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'HealthSis'),
+      home: const Register(title: 'HealthSis'),
       debugShowCheckedModeBanner: false,
 
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class Register extends StatefulWidget {
+  const Register({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<Register> createState() => _RegisterState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _RegisterState extends State<Register> {
   void pressButtonLogin() {
     print('Saya di Klik Login');
   }

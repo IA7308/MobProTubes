@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tubes/_dashboard.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,22 +16,22 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Edit Profile'),
+      home: const Profile(title: 'Edit Profile'),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class Profile extends StatefulWidget {
+  const Profile({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<Profile> createState() => _ProfileState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -134,6 +135,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   // Tambahkan aksi saat item dipilih
                 },
               ),
+              TextButton(
+                onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard(title: 'HealthSis'),));
+                }, 
+                child: Text('Home')
+              )
             ],
           ),
         ),

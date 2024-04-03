@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tubes/_menu_diet.dart';
+import 'package:flutter_tubes/_profile.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,22 +17,22 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'HealthSis'),
+      home: const Artikel(title: 'HealthSis'),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class Artikel extends StatefulWidget {
+  const Artikel({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<Artikel> createState() => _ArtikelState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _ArtikelState extends State<Artikel> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,21 +63,27 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               ListTile(
-                title: const Text('Profile'),
-                onTap: () {},
-              ),
-              ListTile(
-                title: const Text('Menu Diet'),
-                onTap: () {},
-              ),
-              ListTile(
-                title: const Text('Artikel'),
-                onTap: () {},
-              ),
-              ListTile(
-                title: const Text('Timeline'),
-                onTap: () {},
-              ),
+              title: const Text('Profile'),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Profile(title: 'HealthSis'),));
+              },
+            ),
+            ListTile(
+              title: const Text('Menu Diet'),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => MenuDiet(title: 'HealthSis'),));
+              },
+            ),
+            ListTile(
+              title: const Text('Artikel'),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Artikel(title: 'HealthSis'),));
+              },
+            ),
+            ListTile(
+              title: const Text('Timeline'),
+              onTap: () {},
+            ),
             ],
           ),
         ),

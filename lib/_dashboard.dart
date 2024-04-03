@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_tubes/_artikel.dart';
+import 'package:flutter_tubes/_menu_diet.dart';
+import 'package:flutter_tubes/_profile.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,22 +19,22 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'HealthSis'),
+      home: const Dashboard(title: 'HealthSis'),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class Dashboard extends StatefulWidget {
+  const Dashboard({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<Dashboard> createState() => _DashboardState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,15 +56,21 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             ListTile(
               title: const Text('Profile'),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Profile(title: 'HealthSis'),));
+              },
             ),
             ListTile(
               title: const Text('Menu Diet'),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => MenuDiet(title: 'HealthSis'),));
+              },
             ),
             ListTile(
               title: const Text('Artikel'),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Artikel(title: 'HealthSis'),));
+              },
             ),
             ListTile(
               title: const Text('Timeline'),
