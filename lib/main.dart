@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tubes/_dashboard.dart';
+import 'package:flutter_tubes/_register.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,11 +36,11 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   
   void pressButtonLogin() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const Dashboard(title: 'Dashboard'),));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const Dashboard(title: 'HealthSis'),));
   }
 
   void pressButtonDaftar() {
-    print('Saya di Klik Daftar');
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const Register(title: 'HealthSis')));
   }
 
   @override
