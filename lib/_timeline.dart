@@ -1,40 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_tubes/_menu_diet.dart';
 import 'package:flutter_tubes/_page_awal.dart';
 import 'package:flutter_tubes/_profile.dart';
-import 'package:flutter_tubes/_timeline.dart';
+import 'package:flutter_tubes/_artikel.dart';
+
+late List<String> Judul = [];
+late List<String> SubJudul = [];
+late TextEditingController JudulController = TextEditingController();
+late TextEditingController SubJudulController = TextEditingController();
+late List<bool> Likes = [];
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
+  
 }
 
 class MyApp extends StatelessWidget {
+  
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'ARTIKEL',
+      title: 'Timeline',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const Artikel(title: 'HealthSis'),
+      home: const Timeline(title: 'HealthSis'),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
-class Artikel extends StatefulWidget {
-  const Artikel({super.key, required this.title});
+class Timeline extends StatefulWidget {
+  const Timeline({super.key, required this.title});
 
   final String title;
 
   @override
-  State<Artikel> createState() => _Artikel();
+  State<Timeline> createState() => _Timeline();
 }
 
-class _Artikel extends State<Artikel> {
+class _Timeline extends State<Timeline> {
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -164,118 +177,87 @@ class _Artikel extends State<Artikel> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(10.0),
-          child: ListView(
-            scrollDirection: Axis.vertical,
-            children: <Widget>[
-              const Text(
-                'Artikel',
-                style: TextStyle(
-                  fontSize: 25.0,
-                  fontFamily: 'Times New Roman',
-                  fontWeight: FontWeight.bold,
+          child: ListView.builder(
+            itemCount: Judul.length,
+            itemBuilder: (context, index) {
+              return Card(
+                child: ListTile(
+                  leading: CircleAvatar(),
+                  title: Text('${Judul[index]}'),
+                  subtitle: Text('${SubJudul[index]}'),
+                  trailing: GestureDetector(
+                    onTap: (){
+                      setState(() {
+                        Likes[index] = !Likes[index];
+                      });
+                    },
+                    child: Icon(
+                      Likes[index] ? Icons.favorite : Icons.favorite_border,
+                      color: Likes[index] ? Colors.red : null,
+                    ),
+                  ),
                 ),
-              ),
-              const SizedBox(
-                height: 15.0,
-              ),
-              Card(
-                color: Colors.blue,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    const ListTile(
-                      leading: Icon(Icons.album),
-                      title: Text('BA'),
-                      subtitle: Text('Sub Judul'),
-                    ),
-                    ButtonBar(
-                      children: <Widget>[
-                        ElevatedButton(
-                          child: const Text('Selengkapnya'),
-                          onPressed: () {},
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 5.0,
-              ),
-              Card(
-                color: Color.fromARGB(255, 255, 169, 154),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    const ListTile(
-                      leading: Icon(Icons.album),
-                      title: Text('C'),
-                      subtitle: Text('Sub Judul'),
-                    ),
-                    ButtonBar(
-                      children: <Widget>[
-                        ElevatedButton(
-                          child: const Text('Selengkapnya'),
-                          onPressed: () {},
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 5.0,
-              ),
-              Card(
-                color: Colors.yellow,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    const ListTile(
-                      leading: Icon(Icons.album),
-                      title: Text('O'),
-                      subtitle: Text('Sub Judul'),
-                    ),
-                    ButtonBar(
-                      children: <Widget>[
-                        ElevatedButton(
-                          child: const Text('Selengkapnya'),
-                          onPressed: () {},
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 5.0,
-              ),
-              Card(
-                color: Colors.green,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    const ListTile(
-                      leading: Icon(Icons.album),
-                      title: Text('T'),
-                      subtitle: Text('Sub Judul'),
-                    ),
-                    ButtonBar(
-                      children: <Widget>[
-                        ElevatedButton(
-                          child: const Text('Selengkapnya'),
-                          onPressed: () {},
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 5.0,
-              ),
-            ],
+              );
+            },
           ),
-        ));
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: (){
+            showDialog(
+              context: context, 
+              builder: (context) {
+                return Dialog(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(3.0),
+                        child: Text('Add Timeline', style: TextStyle(fontSize: 32.0),),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: TextField(
+                        controller: JudulController,
+                        decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Judul'),
+                      ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: TextField(
+                        controller: SubJudulController,
+                        decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Apa Yang Anda Pikirkan?'),
+                      ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(12.0),
+                        child: Center(
+                        child: FloatingActionButton(
+                          child: Text('Post'),
+                          onPressed: (){
+                            setState(() {
+                              Judul.add(JudulController.text);
+                              SubJudul.add(SubJudulController.text);
+                              Likes.add(false);
+                            });
+                            JudulController.clear();
+                            SubJudulController.clear();
+                            Navigator.pop(context);
+                          }
+                        ),
+                      ),
+                      )
+                    ],
+                  ),
+                );
+              },
+
+            );
+          }
+          ),);
   }
 }

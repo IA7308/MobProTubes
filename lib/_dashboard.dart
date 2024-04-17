@@ -4,6 +4,7 @@ import 'package:flutter_tubes/_artikel.dart';
 import 'package:flutter_tubes/_menu_diet.dart';
 import 'package:flutter_tubes/_page_awal.dart';
 import 'package:flutter_tubes/_profile.dart';
+import 'package:flutter_tubes/_timeline.dart';
 
 void main() {
   runApp(const MyApp());
@@ -98,7 +99,14 @@ class _Dashboard extends State<Dashboard> {
             ),
             ListTile(
               title: const Text('Timeline'),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (BuildContext context) {
+                      return const Timeline(title: 'HealthSis');
+                    }),
+                  );
+              },
             ),
             const Divider(),
             ListTile(
