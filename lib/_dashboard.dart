@@ -65,7 +65,22 @@ class _Dashboard extends State<Dashboard> {
               ),
             ),
             ListTile(
+              title: const Text('Dashboard', style: TextStyle(fontWeight: FontWeight.bold),),
+              tileColor: Color.fromARGB(
+                    255, 255, 169, 154),
+              splashColor: Colors.red,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (BuildContext context) {
+                    return const Dashboard(title: 'HealthSis');
+                  }),
+                );
+              },
+            ),
+            ListTile(
               title: const Text('Profile'),
+              splashColor: Colors.red,
               onTap: () {
                 Navigator.push(
                   context,
@@ -77,6 +92,7 @@ class _Dashboard extends State<Dashboard> {
             ),
             ListTile(
               title: const Text('Menu Diet'),
+              splashColor: Colors.red,
               onTap: () {
                 Navigator.push(
                   context,
@@ -88,6 +104,7 @@ class _Dashboard extends State<Dashboard> {
             ),
             ListTile(
               title: const Text('Artikel'),
+              splashColor: Colors.red,
               onTap: () {
                 Navigator.push(
                   context,
@@ -99,6 +116,7 @@ class _Dashboard extends State<Dashboard> {
             ),
             ListTile(
               title: const Text('Timeline'),
+              splashColor: Colors.red,
               onTap: () {
                 Navigator.push(
                     context,
@@ -117,6 +135,7 @@ class _Dashboard extends State<Dashboard> {
                     fontWeight: FontWeight.bold,
                     fontSize: 20),
               ),
+              splashColor: Colors.red,
               onTap: () {
                 showDialog(
                   context: context,
@@ -172,32 +191,29 @@ class _Dashboard extends State<Dashboard> {
                   Container(
                     margin: const EdgeInsets.all(5.0),
                     color: Colors.red,
-                    child: const Center(
-                      child: Text(
-                        'Slide 1',
-                        style: TextStyle(fontSize: 24.0, color: Colors.white),
-                      ),
-                    ),
+                    child: Stack(
+                      children: <Widget>[
+                        Image.asset('images/HealthPeople.jpg'),
+                      ],
+                    )
                   ),
                   Container(
                     margin: const EdgeInsets.all(5.0),
                     color: Colors.blue,
-                    child: const Center(
-                      child: Text(
-                        'Slide 2',
-                        style: TextStyle(fontSize: 24.0, color: Colors.white),
-                      ),
-                    ),
+                    child: Stack(
+                      children: <Widget>[
+                        Image.asset('images/Dashboard.png')
+                      ], 
+                    )
                   ),
                   Container(
                     margin: const EdgeInsets.all(5.0),
                     color: Colors.green,
-                    child: const Center(
-                      child: Text(
-                        'Slide 3',
-                        style: TextStyle(fontSize: 24.0, color: Colors.white),
-                      ),
-                    ),
+                    child: Stack(
+                      children: <Widget>[
+                        Image.asset('images/HealthSIs.jpg')
+                      ], 
+                    )
                   ),
                 ]),
             const SizedBox(

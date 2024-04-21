@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_tubes/_dashboard.dart';
 import 'package:flutter_tubes/_menu_diet.dart';
 import 'package:flutter_tubes/_page_awal.dart';
 import 'package:flutter_tubes/_profile.dart';
@@ -84,7 +85,20 @@ class _Timeline extends State<Timeline> {
                 ),
               ),
               ListTile(
+              title: const Text('Dashboard'),
+              splashColor: Colors.red,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (BuildContext context) {
+                    return const Dashboard(title: 'HealthSis');
+                  }),
+                );
+              },
+            ),
+              ListTile(
                 title: const Text('Profile'),
+                splashColor: Colors.red,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -96,6 +110,7 @@ class _Timeline extends State<Timeline> {
               ),
               ListTile(
                 title: const Text('Menu Diet'),
+                splashColor: Colors.red,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -107,6 +122,7 @@ class _Timeline extends State<Timeline> {
               ),
               ListTile(
                 title: const Text('Artikel'),
+                splashColor: Colors.red,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -117,7 +133,10 @@ class _Timeline extends State<Timeline> {
                 },
               ),
               ListTile(
-                title: const Text('Timeline'),
+                title: const Text('Timeline', style: TextStyle(fontWeight: FontWeight.bold),),
+                tileColor: Color.fromARGB(
+                    255, 255, 169, 154),
+                splashColor: Colors.red,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -136,6 +155,7 @@ class _Timeline extends State<Timeline> {
                       fontWeight: FontWeight.bold,
                       fontSize: 20),
                 ),
+                splashColor: Colors.red,
                 onTap: () {
                   showDialog(
                     context: context,
@@ -182,7 +202,7 @@ class _Timeline extends State<Timeline> {
             itemBuilder: (context, index) {
               return Card(
                 child: ListTile(
-                  leading: CircleAvatar(),
+                  leading: CircleAvatar(child: Icon(Icons.person),),
                   title: Text('${Judul[index]}'),
                   subtitle: Text('${SubJudul[index]}'),
                   trailing: GestureDetector(

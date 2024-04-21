@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_tubes/_artikel.dart';
+import 'package:flutter_tubes/_dashboard.dart';
 import 'package:flutter_tubes/_page_awal.dart';
 import 'package:flutter_tubes/_profile.dart';
 import 'package:flutter_tubes/_timeline.dart';
@@ -72,7 +73,20 @@ class _MenuDiet extends State<MenuDiet> {
                 ),
               ),
               ListTile(
+              title: const Text('Dashboard'),
+              splashColor: Colors.red,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (BuildContext context) {
+                    return const Dashboard(title: 'HealthSis');
+                  }),
+                );
+              },
+            ),
+              ListTile(
                 title: const Text('Profile'),
+                splashColor: Colors.red,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -83,7 +97,10 @@ class _MenuDiet extends State<MenuDiet> {
                 },
               ),
               ListTile(
-                title: const Text('Menu Diet'),
+                title: const Text('Menu Diet', style: TextStyle(fontWeight: FontWeight.bold),),
+                tileColor: Color.fromARGB(
+                    255, 255, 169, 154),
+                splashColor: Colors.red,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -95,6 +112,7 @@ class _MenuDiet extends State<MenuDiet> {
               ),
               ListTile(
                 title: const Text('Artikel'),
+                splashColor: Colors.red,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -106,6 +124,7 @@ class _MenuDiet extends State<MenuDiet> {
               ),
               ListTile(
                 title: const Text('Timeline'),
+                splashColor: Colors.red,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -124,6 +143,7 @@ class _MenuDiet extends State<MenuDiet> {
                       fontWeight: FontWeight.bold,
                       fontSize: 20),
                 ),
+                splashColor: Colors.red,
                 onTap: () {
                   showDialog(
                     context: context,
@@ -227,9 +247,18 @@ class _MenuDiet extends State<MenuDiet> {
                     mainAxisSpacing: 10.0,
                   ),
                   delegate: SliverChildListDelegate([
-                    Card(
-                        color: Colors.blue,
-                        child: ListView(
+                    Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage('images/Food_1.jpg'),
+                          fit: BoxFit.cover,
+                        )
+                      ),
+                      child: Card(
+                        color: Colors.transparent,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: ListView(
                           children: <Widget>[
                             const Padding(
                               padding: EdgeInsets.symmetric(
@@ -263,7 +292,10 @@ class _MenuDiet extends State<MenuDiet> {
                                   onPressed: () {}, child: const Text('More')),
                             )
                           ],
-                        )),
+                        ),
+                        )
+                      ),
+                    ),
                     Card(
                         color: Color.fromARGB(255, 255, 169, 154),
                         child: ListView(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tubes/_dashboard.dart';
 import 'package:flutter_tubes/_menu_diet.dart';
 import 'package:flutter_tubes/_page_awal.dart';
 import 'package:flutter_tubes/_profile.dart';
@@ -71,7 +72,20 @@ class _Artikel extends State<Artikel> {
                 ),
               ),
               ListTile(
+              title: const Text('Dashboard'),
+              splashColor: Colors.red,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (BuildContext context) {
+                    return const Dashboard(title: 'HealthSis');
+                  }),
+                );
+              },
+            ),
+              ListTile(
                 title: const Text('Profile'),
+                splashColor: Colors.red,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -83,6 +97,7 @@ class _Artikel extends State<Artikel> {
               ),
               ListTile(
                 title: const Text('Menu Diet'),
+                splashColor: Colors.red,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -93,7 +108,10 @@ class _Artikel extends State<Artikel> {
                 },
               ),
               ListTile(
-                title: const Text('Artikel'),
+                title: const Text('Artikel', style: TextStyle(fontWeight: FontWeight.bold),),
+                tileColor: Color.fromARGB(
+                    255, 255, 169, 154),
+                splashColor: Colors.red,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -105,6 +123,7 @@ class _Artikel extends State<Artikel> {
               ),
               ListTile(
                 title: const Text('Timeline'),
+                splashColor: Colors.red,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -123,6 +142,7 @@ class _Artikel extends State<Artikel> {
                       fontWeight: FontWeight.bold,
                       fontSize: 20),
                 ),
+                splashColor: Colors.red,
                 onTap: () {
                   showDialog(
                     context: context,
@@ -185,7 +205,7 @@ class _Artikel extends State<Artikel> {
                   children: <Widget>[
                     const ListTile(
                       leading: Icon(Icons.album),
-                      title: Text('BA'),
+                      title: Text('Judul'),
                       subtitle: Text('Sub Judul'),
                     ),
                     ButtonBar(
@@ -257,7 +277,7 @@ class _Artikel extends State<Artikel> {
                   children: <Widget>[
                     const ListTile(
                       leading: Icon(Icons.album),
-                      title: Text('T'),
+                      title: Text('Judul'),
                       subtitle: Text('Sub Judul'),
                     ),
                     ButtonBar(

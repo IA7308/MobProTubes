@@ -157,7 +157,22 @@ class _Profile extends State<Profile> {
                 ),
               ),
               ListTile(
-                title: const Text('Profile'),
+              title: const Text('Dashboard'),
+              splashColor: Colors.red,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (BuildContext context) {
+                    return const Dashboard(title: 'HealthSis');
+                  }),
+                );
+              },
+            ),
+              ListTile(
+                title: const Text('Profile', style: TextStyle(fontWeight: FontWeight.bold),),
+                tileColor: Color.fromARGB(
+                    255, 255, 169, 154),
+                splashColor: Colors.red,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -169,6 +184,7 @@ class _Profile extends State<Profile> {
               ),
               ListTile(
                 title: const Text('Menu Diet'),
+                splashColor: Colors.red,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -180,6 +196,7 @@ class _Profile extends State<Profile> {
               ),
               ListTile(
                 title: const Text('Artikel'),
+                splashColor: Colors.red,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -191,6 +208,7 @@ class _Profile extends State<Profile> {
               ),
               ListTile(
                 title: const Text('Timeline'),
+                splashColor: Colors.red,
                 onTap: () {},
               ),
               const Divider(),
@@ -202,6 +220,7 @@ class _Profile extends State<Profile> {
                       fontWeight: FontWeight.bold,
                       fontSize: 20),
                 ),
+                splashColor: Colors.red,
                 onTap: () {
                   showDialog(
                     context: context,
