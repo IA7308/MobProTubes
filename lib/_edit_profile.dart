@@ -33,6 +33,21 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfile extends State<EditProfile> {
   final _formKey = GlobalKey<FormState>(); // GlobalKey untuk Form
+  TextEditingController _dateController = TextEditingController();
+
+  Future<void> _selectDate() async {
+    DateTime? _picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1945),
+        lastDate: DateTime(2100));
+
+    if (_picked != null) {
+      setState(() {
+        _dateController.text = _picked.toString().split(" ")[0];
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +86,8 @@ class _EditProfile extends State<EditProfile> {
                         if (_formKey.currentState!.validate()) {
                           // Lakukan aksi save jika form valid
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Data berhasil disimpan')),
+                            const SnackBar(
+                                content: Text('Data berhasil disimpan')),
                           );
                         }
                       },
@@ -79,11 +95,57 @@ class _EditProfile extends State<EditProfile> {
                   ],
                 ),
                 const SizedBox(height: 20.0),
-                const Align(
-                  alignment: Alignment.center,
-                  child: CircleAvatar(
-                    radius: 100,
-                    backgroundImage: AssetImage(''),
+                GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet<void>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Container(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              ListTile(
+                                leading: const Icon(Icons.folder),
+                                title: const Text('Pilih dari Folder'),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  // Tambahkan logika untuk memilih gambar dari folder di sini
+                                },
+                              ),
+                              ListTile(
+                                leading: const Icon(Icons.camera_alt),
+                                title: const Text('Ambil Gambar'),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  // Tambahkan logika untuk mengambil gambar dari kamera di sini
+                                },
+                              ),
+                              ListTile(
+                                leading: const Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
+                                ),
+                                title: const Text(
+                                  'Hapus Gambar',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  // Tambahkan logika untuk menghapus gambar di sini
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  child: const Align(
+                    alignment: Alignment.center,
+                    child: CircleAvatar(
+                      radius: 100,
+                      backgroundImage: AssetImage('images/Default.jpg'),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 20.0),
@@ -99,7 +161,9 @@ class _EditProfile extends State<EditProfile> {
                 TextFormField(
                   decoration: const InputDecoration(labelText: 'No HP'),
                   keyboardType: TextInputType.phone,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly], // Hanya menerima input angka
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly
+                  ], // Hanya menerima input angka
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'No HP tidak boleh kosong';
@@ -120,8 +184,15 @@ class _EditProfile extends State<EditProfile> {
                 ),
                 const SizedBox(height: 20.0),
                 TextFormField(
-                  decoration: const InputDecoration(labelText: 'Umur'),
-                  keyboardType: TextInputType.datetime,
+                  controller: _dateController,
+                  decoration: const InputDecoration(
+                    labelText: 'Umur',
+                    suffixIcon: Icon(Icons.calendar_today),
+                  ),
+                  readOnly: true,
+                  onTap: () {
+                    _selectDate();
+                  },
                   validator: (value) {
                     // Validasi Umur
                     if (value == null || value.isEmpty) {

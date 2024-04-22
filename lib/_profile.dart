@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tubes/_artikel.dart';
 import 'package:flutter_tubes/_edit_profile.dart';
-import 'package:flutter_tubes/_menu_diet.dart';
-import 'package:flutter_tubes/_dashboard.dart';
-import 'package:flutter_tubes/_page_awal.dart';
+import 'package:flutter_tubes/_sidebar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -42,19 +39,6 @@ class _Profile extends State<Profile> {
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 255, 169, 154),
         title: Text(widget.title),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.home),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (BuildContext context) {
-                  return const Dashboard(title: 'HealthSis');
-                }),
-              );
-            },
-          ),
-        ],
       ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -92,7 +76,7 @@ class _Profile extends State<Profile> {
                 alignment: Alignment.center,
                 child: CircleAvatar(
                   radius: 100,
-                  backgroundImage: AssetImage(''),
+                  backgroundImage: AssetImage('images/Default.jpg'),
                 ),
               ),
               const SizedBox(height: 20.0),
@@ -136,137 +120,7 @@ class _Profile extends State<Profile> {
           ),
         ),
       ),
-      drawer: Drawer(
-        child: Container(
-          child: Column(
-            children: [
-              const UserAccountsDrawerHeader(
-                accountName: Text('Iqnaz Diningrat',
-                    style: TextStyle(
-                        color: Colors.black)),
-                accountEmail: Text('Diningratpride@email',
-                    style: TextStyle(
-                        color: Colors.black)),
-                currentAccountPicture: CircleAvatar(
-                  radius: 60,
-                  backgroundImage: AssetImage(''),
-                ),
-                decoration: BoxDecoration(
-                  color: Color.fromARGB(
-                      255, 255, 169, 154),
-                ),
-              ),
-              ListTile(
-              title: const Text('Dashboard'),
-              splashColor: Colors.red,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (BuildContext context) {
-                    return const Dashboard(title: 'HealthSis');
-                  }),
-                );
-              },
-            ),
-              ListTile(
-                title: const Text('Profile', style: TextStyle(fontWeight: FontWeight.bold),),
-                tileColor: Color.fromARGB(
-                    255, 255, 169, 154),
-                splashColor: Colors.red,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (BuildContext context) {
-                      return const Profile(title: 'HealthSis');
-                    }),
-                  );
-                },
-              ),
-              ListTile(
-                title: const Text('Menu Diet'),
-                splashColor: Colors.red,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (BuildContext context) {
-                      return const MenuDiet(title: 'HealthSis');
-                    }),
-                  );
-                },
-              ),
-              ListTile(
-                title: const Text('Artikel'),
-                splashColor: Colors.red,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (BuildContext context) {
-                      return const Artikel(title: 'HealthSis');
-                    }),
-                  );
-                },
-              ),
-              ListTile(
-                title: const Text('Timeline'),
-                splashColor: Colors.red,
-                onTap: () {},
-              ),
-              const Divider(),
-              ListTile(
-                title: const Text(
-                  'Logout',
-                  style: TextStyle(
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20),
-                ),
-                splashColor: Colors.red,
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext dialogContext) {
-                      return AlertDialog(
-                        title: const Text('Logout Confirmation'),
-                        content: const Text('Are you sure you want to logout?'),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(dialogContext).pop();
-                            },
-                            child: const Text('No'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(dialogContext).pop();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) {
-                                  return PageAwal();
-                                }),
-                              );
-                            },
-                            child: const Text(
-                              'Yes',
-                              style: TextStyle(color: Colors.red),
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-              ),
-              TextButton(
-                onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard(title: 'HealthSis'),));
-                }, 
-                child: Text('Home')
-              )
-            ],
-          ),
-        ),
-      ),
+      drawer: const Sidebar(),
     );
   }
 }
