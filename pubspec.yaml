@@ -68,6 +68,7 @@ flutter:
     - images/Food_3.jpg
     - images/Food_4.jpg
     - images/Default.jpg
+    - images/Removebg_HS.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
