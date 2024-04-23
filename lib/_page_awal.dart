@@ -31,7 +31,7 @@ class _PageAwal extends State<PageAwal> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            //Image.asset('', scale: 3),
+            Image.asset('images/Removebg_HS.png', scale: 3),
             const Text(
               'Welcome',
               style: TextStyle(
