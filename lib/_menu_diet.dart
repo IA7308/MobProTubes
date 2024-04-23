@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_tubes/_menu_diet_data.dart';
 import 'package:flutter_tubes/_sidebar.dart';
 
 void main() {
@@ -75,28 +76,44 @@ class _MenuDiet extends State<MenuDiet> {
                       enableInfiniteScroll: true,
                       autoPlayAnimationDuration:
                           const Duration(milliseconds: 800),
-                      viewportFraction: 0.8,
+                      viewportFraction: 0.10,
                     ),
                     items: [
                       Container(
                         margin: const EdgeInsets.all(5.0),
                         color: Color.fromARGB(255, 255, 169, 154),
-                        child: const Center(
-                          child: Text(
-                            'Slide 1',
-                            style:
-                                TextStyle(fontSize: 24.0, color: Colors.white),
+                        child: Center(
+                          child: Image.asset( 
+                            'images/Food_7.jpg', // Ganti dengan path gambar yang sesuai
+                            width: 200, // Sesuaikan lebar gambar sesuai kebutuhan
+                            height: 200, // Sesuaikan tinggi gambar sesuai kebutuhan
+                            fit: BoxFit.cover, // Sesuaikan fit gambar sesuai kebutuhan
                           ),
                         ),
                       ),
+
                       Container(
                         margin: const EdgeInsets.all(5.0),
-                        color: Colors.blue,
-                        child: const Center(
-                          child: Text(
-                            'Slide 2',
-                            style:
-                                TextStyle(fontSize: 24.0, color: Colors.white),
+                        color: Color.fromARGB(255, 255, 169, 154),
+                        child: Center(
+                          child: Image.asset( 
+                            'images/Food_6.jpg', // Ganti dengan path gambar yang sesuai
+                            width: 200, // Sesuaikan lebar gambar sesuai kebutuhan
+                            height: 200, // Sesuaikan tinggi gambar sesuai kebutuhan
+                            fit: BoxFit.cover, // Sesuaikan fit gambar sesuai kebutuhan
+                          ),
+                        ),
+                      ),
+
+                       Container(
+                        margin: const EdgeInsets.all(5.0),
+                        color: Color.fromARGB(255, 255, 169, 154),
+                        child: Center(
+                          child: Image.asset( 
+                            'images/Food_5.jpg', // Ganti dengan path gambar yang sesuai
+                            width: 200, // Sesuaikan lebar gambar sesuai kebutuhan
+                            height: 200, // Sesuaikan tinggi gambar sesuai kebutuhan
+                            fit: BoxFit.cover, // Sesuaikan fit gambar sesuai kebutuhan
                           ),
                         ),
                       ),
@@ -116,7 +133,7 @@ class _MenuDiet extends State<MenuDiet> {
                     Container(
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage('images/Food_1.jpg'),
+                          image: AssetImage('images/Food_5.jpg'),
                           fit: BoxFit.cover,
                         )
                       ),
@@ -138,7 +155,7 @@ class _MenuDiet extends State<MenuDiet> {
                             ),
                             const Center(
                               child: Text(
-                                'JUDUL',
+                                'Special Healthy Rice',
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontFamily: 'Times New Roman'),
@@ -146,7 +163,7 @@ class _MenuDiet extends State<MenuDiet> {
                             ),
                             const Center(
                               child: Text(
-                                'Sub Judul',
+                                'Chef Codeblu',
                                 style: TextStyle(
                                     fontSize: 11, fontStyle: FontStyle.italic),
                               ),
@@ -155,22 +172,44 @@ class _MenuDiet extends State<MenuDiet> {
                               padding: const EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 30),
                               child: ElevatedButton(
-                                  onPressed: () {}, child: const Text('More')),
+                                  onPressed: () {
+                                    Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => IsiDataMenu(
+                                judul: 'Special Healthy Rice',
+                                subJudul: '',
+                                penjelasan: 'Makanan diet yang terdiri dari salmon, sayuran, dan telur adalah pilihan yang baik untuk menjaga kesehatan dan membantu dalam proses penurunan berat badan',
+                                chef: 'Chef Arnold',
+                                kalori: 375,
+                              ),
+                            ));
+                                  }, child: const Text('More')),
                             )
                           ],
                         ),
                         )
                       ),
                     ),
-                    Card(
-                        color: Color.fromARGB(255, 255, 169, 154),
-                        child: ListView(
+
+                    Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage('images/Food_6.jpg'),
+                          fit: BoxFit.cover,
+                        )
+                      ),
+                      child: Card(
+                        color: Colors.transparent,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: ListView(
                           children: <Widget>[
                             const Padding(
                               padding: EdgeInsets.symmetric(
                                   vertical: 20.0, horizontal: 10.0),
                               child: Center(
-                                child: Icon(Icons.food_bank_outlined),
+                                child: Icon(Icons.food_bank),
                               ),
                             ),
                             const SizedBox(
@@ -178,7 +217,7 @@ class _MenuDiet extends State<MenuDiet> {
                             ),
                             const Center(
                               child: Text(
-                                'JUDUL',
+                                'Healthy Vegetables Tuna',
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontFamily: 'Times New Roman'),
@@ -186,7 +225,7 @@ class _MenuDiet extends State<MenuDiet> {
                             ),
                             const Center(
                               child: Text(
-                                'Sub Judul',
+                                'Chef Codeblu',
                                 style: TextStyle(
                                     fontSize: 11, fontStyle: FontStyle.italic),
                               ),
@@ -195,19 +234,43 @@ class _MenuDiet extends State<MenuDiet> {
                               padding: const EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 30),
                               child: ElevatedButton(
-                                  onPressed: () {}, child: const Text('More')),
+                                  onPressed: () {
+                                    Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => IsiDataMenu(
+                                judul: 'Healthy Vegetables Tuna',
+                                subJudul: '',
+                                penjelasan: 'Makanan diet yang terdiri dari salmon, sayuran, dan telur adalah pilihan yang baik untuk menjaga kesehatan dan membantu dalam proses penurunan berat badan',
+                                chef: 'Chef Arnold',
+                                kalori: 350,
+                              ),
+                            ));
+                                  }, child: const Text('More')),
                             )
                           ],
-                        )),
-                    Card(
-                        color: Colors.green,
-                        child: ListView(
+                        ),
+                        )
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage('images/Food_7.jpg'),
+                          fit: BoxFit.cover,
+                        )
+                      ),
+                      child: Card(
+                        color: Colors.transparent,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: ListView(
                           children: <Widget>[
                             const Padding(
                               padding: EdgeInsets.symmetric(
                                   vertical: 20.0, horizontal: 10.0),
                               child: Center(
-                                child: Icon(Icons.food_bank_rounded),
+                                child: Icon(Icons.food_bank),
                               ),
                             ),
                             const SizedBox(
@@ -215,7 +278,7 @@ class _MenuDiet extends State<MenuDiet> {
                             ),
                             const Center(
                               child: Text(
-                                'JUDUL',
+                                'Vegetables With Chicken Roast',
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontFamily: 'Times New Roman'),
@@ -223,7 +286,7 @@ class _MenuDiet extends State<MenuDiet> {
                             ),
                             const Center(
                               child: Text(
-                                'Sub Judul',
+                                'Chef Codeblu',
                                 style: TextStyle(
                                     fontSize: 11, fontStyle: FontStyle.italic),
                               ),
@@ -232,19 +295,43 @@ class _MenuDiet extends State<MenuDiet> {
                               padding: const EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 30),
                               child: ElevatedButton(
-                                  onPressed: () {}, child: const Text('More')),
+                                  onPressed: () {
+                                    Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => IsiDataMenu(
+                                judul: 'Vegetables With Chicken Roast ',
+                                subJudul: '',
+                                penjelasan: 'Makanan diet yang terdiri dari salmon, sayuran, dan telur adalah pilihan yang baik untuk menjaga kesehatan dan membantu dalam proses penurunan berat badan',
+                                chef: 'Chef Arnold',
+                                kalori: 375,
+                              ),
+                            ));
+                                  }, child: const Text('More')),
                             )
                           ],
-                        )),
-                    Card(
-                        color: Colors.yellow,
-                        child: ListView(
+                        ),
+                        )
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage('images/Food_9.jpg'),
+                          fit: BoxFit.cover,
+                        )
+                      ),
+                      child: Card(
+                        color: Colors.transparent,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: ListView(
                           children: <Widget>[
                             const Padding(
                               padding: EdgeInsets.symmetric(
                                   vertical: 20.0, horizontal: 10.0),
                               child: Center(
-                                child: Icon(Icons.food_bank_sharp),
+                                child: Icon(Icons.food_bank),
                               ),
                             ),
                             const SizedBox(
@@ -252,7 +339,7 @@ class _MenuDiet extends State<MenuDiet> {
                             ),
                             const Center(
                               child: Text(
-                                'JUDUL',
+                                'Sweety Salmon',
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontFamily: 'Times New Roman'),
@@ -260,7 +347,7 @@ class _MenuDiet extends State<MenuDiet> {
                             ),
                             const Center(
                               child: Text(
-                                'Sub Judul',
+                                'Chef Codeblu',
                                 style: TextStyle(
                                     fontSize: 11, fontStyle: FontStyle.italic),
                               ),
@@ -269,10 +356,25 @@ class _MenuDiet extends State<MenuDiet> {
                               padding: const EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 30),
                               child: ElevatedButton(
-                                  onPressed: () {}, child: const Text('More')),
+                                  onPressed: () {
+                                    Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => IsiDataMenu(
+                                judul: 'Sweety Salmon',
+                                subJudul: '',
+                                penjelasan: 'Makanan diet yang terdiri dari salmon, sayuran, dan telur adalah pilihan yang baik untuk menjaga kesehatan dan membantu dalam proses penurunan berat badan',
+                                chef: 'Chef Arnold',
+                                kalori: 400,
+                              ),
+                            ));
+                                  }, child: const Text('More')),
                             )
                           ],
-                        )),
+                        ),
+                        )
+                      ),
+                    ),
                   ]),
                 ),
               ],
