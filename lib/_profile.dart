@@ -120,7 +120,7 @@ class _Profile extends State<Profile> {
           ),
         ),
       ),
-      drawer: const Sidebar(),
+      drawer: const Sidebar(selectedIndex: 3,),
     );
   }
 }

@@ -55,7 +55,7 @@ class _Timeline extends State<Timeline> {
           ),
         ],
       ),
-      drawer: const Sidebar(),
+      drawer: const Sidebar(selectedIndex: 4,),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: ListView.builder(

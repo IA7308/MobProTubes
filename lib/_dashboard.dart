@@ -41,7 +41,7 @@ class _Dashboard extends State<Dashboard> {
         backgroundColor: const Color.fromARGB(255, 255, 169, 154),
         title: Text(widget.title),
       ),
-      drawer: const Sidebar(),
+      drawer: const Sidebar(selectedIndex: 0,),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10.0),
         child: ListView(

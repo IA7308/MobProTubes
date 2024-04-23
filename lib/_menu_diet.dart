@@ -48,7 +48,7 @@ class _MenuDiet extends State<MenuDiet> {
             ),
           ],
         ),
-        drawer: const Sidebar(),
+        drawer: const Sidebar(selectedIndex: 2,),
         body: Padding(
             padding: const EdgeInsets.all(10.0),
             child: CustomScrollView(

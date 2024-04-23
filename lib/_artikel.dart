@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tubes/_artikelMain.dart';
 import 'package:flutter_tubes/_sidebar.dart';
 
+late List<String> Judul = [];
+late List<String> SubJudul = [];
+late TextEditingController JudulController = TextEditingController();
+late TextEditingController SubJudulController = TextEditingController();
+
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -35,133 +42,101 @@ class _Artikel extends State<Artikel> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Color.fromARGB(255, 255, 169, 154),
-          title: Text(widget.title),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.filter_list),
-              onPressed: () {
-                // Handle your filter action here
-              },
-            ),
-          ],
-        ),
-        drawer: const Sidebar(),
-        body: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: ListView(
-            scrollDirection: Axis.vertical,
-            children: <Widget>[
-              const Text(
-                'Artikel',
-                style: TextStyle(
-                  fontSize: 25.0,
-                  fontFamily: 'Times New Roman',
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(
-                height: 15.0,
-              ),
-              Card(
-                color: Colors.blue,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    const ListTile(
-                      leading: Icon(Icons.album),
-                      title: Text('Judul'),
-                      subtitle: Text('Sub Judul'),
-                    ),
-                    ButtonBar(
-                      children: <Widget>[
-                        ElevatedButton(
-                          child: const Text('Selengkapnya'),
-                          onPressed: () {},
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 5.0,
-              ),
-              Card(
-                color: Color.fromARGB(255, 255, 169, 154),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    const ListTile(
-                      leading: Icon(Icons.album),
-                      title: Text('C'),
-                      subtitle: Text('Sub Judul'),
-                    ),
-                    ButtonBar(
-                      children: <Widget>[
-                        ElevatedButton(
-                          child: const Text('Selengkapnya'),
-                          onPressed: () {},
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 5.0,
-              ),
-              Card(
-                color: Colors.yellow,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    const ListTile(
-                      leading: Icon(Icons.album),
-                      title: Text('O'),
-                      subtitle: Text('Sub Judul'),
-                    ),
-                    ButtonBar(
-                      children: <Widget>[
-                        ElevatedButton(
-                          child: const Text('Selengkapnya'),
-                          onPressed: () {},
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 5.0,
-              ),
-              Card(
-                color: Colors.green,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    const ListTile(
-                      leading: Icon(Icons.album),
-                      title: Text('Judul'),
-                      subtitle: Text('Sub Judul'),
-                    ),
-                    ButtonBar(
-                      children: <Widget>[
-                        ElevatedButton(
-                          child: const Text('Selengkapnya'),
-                          onPressed: () {},
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 5.0,
-              ),
-            ],
+      appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 255, 169, 154),
+        title: Text(widget.title),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.filter_list),
+            onPressed: () {
+              // Handle your filter action here
+            },
           ),
-        ));
+        ],
+      ),
+      drawer: const Sidebar(selectedIndex: 1,),
+      body: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: ListView.builder(
+            itemCount: Judul.length,
+            itemBuilder: (context, index) {
+              return Card(
+                child: ListTile(
+                  leading: Image.asset('images/Dashboard.png'),
+                  title: Text('${Judul[index]}'),
+                  subtitle: Text('${SubJudul[index]}'),
+                  trailing: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => IsiArtikel(
+                                judul: Judul[index],
+                                subJudul: SubJudul[index],
+                              ),
+                            ));
+                      },
+                      child: Text('More')),
+                ),
+              );
+            },
+          )),
+      floatingActionButton: ElevatedButton(
+          child: Icon(Icons.add),
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return Dialog(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      const Padding(
+                        padding: EdgeInsets.all(3.0),
+                        child: Text(
+                          'Add Artikel',
+                          style: TextStyle(fontSize: 32.0),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: TextField(
+                          controller: JudulController,
+                          decoration: const InputDecoration(
+                              border: OutlineInputBorder(), labelText: 'Judul'),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: TextField(
+                          controller: SubJudulController,
+                          decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Apa Yang Anda Pikirkan?'),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Center(
+                          child: FloatingActionButton(
+                              child: const Text('Post'),
+                              onPressed: () {
+                                setState(() {
+                                  Judul.add(JudulController.text);
+                                  SubJudul.add(SubJudulController.text);
+                                });
+                                JudulController.clear();
+                                SubJudulController.clear();
+                                Navigator.pop(context);
+                              }),
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              },
+            );
+          }),
+    );
   }
 }
