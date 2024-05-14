@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tubes/_artikelMain.dart';
 import 'package:flutter_tubes/_sidebar.dart';
 
-late List<String> Judul = [];
-late List<String> SubJudul = [];
-late TextEditingController JudulController = TextEditingController();
-late TextEditingController SubJudulController = TextEditingController();
+List<String> Judul = [];
+List<String> SubJudul = [];
+TextEditingController JudulController = TextEditingController();
+TextEditingController SubJudulController = TextEditingController();
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -63,8 +63,8 @@ class _Artikel extends State<Artikel> {
               return Card(
                 child: ListTile(
                   leading: Image.asset('images/Dashboard.png'),
-                  title: Text('${Judul[index]}'),
-                  subtitle: Text('${SubJudul[index]}'),
+                  title: Text(Judul[index]),
+                  subtitle: Text(SubJudul[index]),
                   trailing: ElevatedButton(
                       onPressed: () {
                         Navigator.push(
