@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/services.dart';
 
 void main() {
@@ -32,19 +34,31 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfile extends State<EditProfile> {
-  final _formKey = GlobalKey<FormState>(); // GlobalKey untuk Form
+  final _formKey = GlobalKey<FormState>();
   TextEditingController _dateController = TextEditingController();
+  File? _imageFile;
+  final ImagePicker _picker = ImagePicker();
 
   Future<void> _selectDate() async {
     DateTime? _picked = await showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime(1945),
-        lastDate: DateTime(2100));
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1945),
+      lastDate: DateTime(2100),
+    );
 
     if (_picked != null) {
       setState(() {
         _dateController.text = _picked.toString().split(" ")[0];
+      });
+    }
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    final pickedFile = await _picker.pickImage(source: source);
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path);
       });
     }
   }
@@ -57,7 +71,7 @@ class _EditProfile extends State<EditProfile> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
-            key: _formKey, // Assign GlobalKey ke Form
+            key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -82,12 +96,9 @@ class _EditProfile extends State<EditProfile> {
                     IconButton(
                       icon: const Icon(Icons.save),
                       onPressed: () {
-                        // Lakukan aksi save jika form valid
                         if (_formKey.currentState!.validate()) {
-                          // Lakukan aksi save jika form valid
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Data berhasil disimpan')),
+                            const SnackBar(content: Text('Data berhasil disimpan')),
                           );
                         }
                       },
@@ -109,7 +120,7 @@ class _EditProfile extends State<EditProfile> {
                                 title: const Text('Pilih dari Folder'),
                                 onTap: () {
                                   Navigator.pop(context);
-                                  // Tambahkan logika untuk memilih gambar dari folder di sini
+                                  _pickImage(ImageSource.gallery);
                                 },
                               ),
                               ListTile(
@@ -117,7 +128,7 @@ class _EditProfile extends State<EditProfile> {
                                 title: const Text('Ambil Gambar'),
                                 onTap: () {
                                   Navigator.pop(context);
-                                  // Tambahkan logika untuk mengambil gambar dari kamera di sini
+                                  _pickImage(ImageSource.camera);
                                 },
                               ),
                               ListTile(
@@ -131,7 +142,9 @@ class _EditProfile extends State<EditProfile> {
                                 ),
                                 onTap: () {
                                   Navigator.pop(context);
-                                  // Tambahkan logika untuk menghapus gambar di sini
+                                  setState(() {
+                                    _imageFile = null;
+                                  });
                                 },
                               ),
                             ],
@@ -140,11 +153,13 @@ class _EditProfile extends State<EditProfile> {
                       },
                     );
                   },
-                  child: const Align(
+                  child: Align(
                     alignment: Alignment.center,
                     child: CircleAvatar(
                       radius: 100,
-                      backgroundImage: AssetImage('images/Default.jpg'),
+                      backgroundImage: _imageFile != null
+                          ? FileImage(_imageFile!)
+                          : const AssetImage('images/Default.jpg') as ImageProvider,
                     ),
                   ),
                 ),
@@ -175,7 +190,6 @@ class _EditProfile extends State<EditProfile> {
                 TextFormField(
                   decoration: const InputDecoration(labelText: 'Status'),
                   validator: (value) {
-                    // Validasi Status
                     if (value == null || value.isEmpty) {
                       return 'Status tidak boleh kosong';
                     }
@@ -194,7 +208,6 @@ class _EditProfile extends State<EditProfile> {
                     _selectDate();
                   },
                   validator: (value) {
-                    // Validasi Umur
                     if (value == null || value.isEmpty) {
                       return 'Umur tidak boleh kosong';
                     }
@@ -205,7 +218,6 @@ class _EditProfile extends State<EditProfile> {
                 TextFormField(
                   decoration: const InputDecoration(labelText: 'Note'),
                   validator: (value) {
-                    // Validasi Note
                     if (value == null || value.isEmpty) {
                       return 'Note tidak boleh kosong';
                     }
