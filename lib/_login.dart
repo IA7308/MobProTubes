@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tubes/_dashboard.dart';
 import 'package:flutter_tubes/_register.dart';
+import 'package:flutter_tubes/firebase_auth_services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,6 +35,21 @@ class Login extends StatefulWidget {
 }
 
 class _Login extends State<Login> {
+  final FirebaseAuthService _auth = FirebaseAuthService();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  String? emailError;
+  String? passwordError;
+  bool passwordVisible = false;
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,20 +77,39 @@ class _Login extends State<Login> {
                               fontFamily: 'Times New Roman'),
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10.0),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
                         child: TextField(
+                          controller: emailController,
                           decoration: InputDecoration(
-                              border: OutlineInputBorder(), labelText: 'Email'),
+                            border: OutlineInputBorder(),
+                            labelText: 'Email',
+                            errorText: emailError,
+                          ),
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 20.0),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20.0),
                         child: TextField(
-                          obscureText: true,
+                          controller: passwordController,
+                          obscureText: !passwordVisible,
                           decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Password'),
+                            border: OutlineInputBorder(),
+                            labelText: 'Password',
+                            errorText: passwordError,
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                passwordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  passwordVisible = !passwordVisible;
+                                });
+                              },
+                            ),
+                          ),
                         ),
                       ),
                       Padding(
@@ -85,19 +121,9 @@ class _Login extends State<Login> {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 5.0),
                                 child: ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (BuildContext context) {
-                                          return const Dashboard(
-                                              title: 'HealthSis');
-                                        }),
-                                      );
-                                    },
+                                    onPressed: _signIn,
                                     style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            Colors.red,
+                                        backgroundColor: Colors.red,
                                         foregroundColor: Colors.white),
                                     child: const Text('Login')),
                               ),
@@ -113,8 +139,7 @@ class _Login extends State<Login> {
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                          Colors.red,
+                                      backgroundColor: Colors.red,
                                       foregroundColor: Colors.white),
                                   child: const Text('Daftar')),
                             ]),
@@ -124,5 +149,34 @@ class _Login extends State<Login> {
                 ),
               ),
             )));
+  }
+
+  void _signIn() async {
+    String email = emailController.text;
+    String password = passwordController.text;
+
+    setState(() {
+      emailError = email.isEmpty ? "Email tidak boleh kosong" : null;
+      passwordError = password.isEmpty ? "Password tidak boleh kosong" : null;
+    });
+
+    if (emailError == null && passwordError == null) {
+      User? user = await _auth.Login(email, password);
+
+      if (user != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Berhasil masuk')),
+        );
+
+        print("Berhasil");
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (BuildContext context) {
+            return const Dashboard(title: 'HealthSis');
+          }),
+        );
+      }
+    }
   }
 }
