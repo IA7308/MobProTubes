@@ -1,11 +1,19 @@
+import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tubes/Model/Artikell.dart';
 import 'package:flutter_tubes/_artikelMain.dart';
 import 'package:flutter_tubes/_sidebar.dart';
+import 'package:flutter_tubes/main.dart';
 
 List<String> Judul = [];
 List<String> SubJudul = [];
 TextEditingController JudulController = TextEditingController();
 TextEditingController SubJudulController = TextEditingController();
+
+
+
+late Stream<List<Artikell>> artikelFuture;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,6 +47,14 @@ class Artikel extends StatefulWidget {
 }
 
 class _Artikel extends State<Artikel> {
+  String? imagepath;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    artikelFuture = getArtikellStream();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,33 +70,74 @@ class _Artikel extends State<Artikel> {
           ),
         ],
       ),
-      drawer: const Sidebar(selectedIndex: 1,),
-      body: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: ListView.builder(
-            itemCount: Judul.length,
+      drawer: const Sidebar(
+        selectedIndex: 1,
+      ),
+      body: StreamBuilder<List<Artikell>>(
+        stream: artikelFuture,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          }
+          var articles = snapshot.data!;
+          return ListView.builder(
+            itemCount: articles.length,
             itemBuilder: (context, index) {
+              var article = articles[index];
               return Card(
                 child: ListTile(
                   leading: Image.asset('images/Dashboard.png'),
-                  title: Text(Judul[index]),
-                  subtitle: Text(SubJudul[index]),
+                  title: Text(article.judul),
+                  subtitle: Text(article.judul),
                   trailing: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => IsiArtikel(
-                                judul: Judul[index],
-                                subJudul: SubJudul[index],
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => IsiArtikel(
+                            judul: article.judul,
+                            subJudul: article.judul,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Text('More'),
+                  ),
+                  onLongPress: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Konfirmasi Delete'),
+                          content: const Text('Apakah Anda yakin ingin hapus?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text('Tidak'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                deleteArtikel(articles[index]);
+                                Navigator.pop(context);
+                              },
+                              child: const Text(
+                                'Ya',
+                                style: TextStyle(color: Colors.red),
                               ),
-                            ));
+                            ),
+                          ],
+                        );
                       },
-                      child: Text('More')),
+                    );
+                  },
                 ),
               );
             },
-          )),
+          );
+        },
+      ),
       floatingActionButton: ElevatedButton(
           child: Icon(Icons.add),
           onPressed: () {
@@ -98,6 +155,53 @@ class _Artikel extends State<Artikel> {
                           style: TextStyle(fontSize: 32.0),
                         ),
                       ),
+                      Container(
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                width: 200,
+                                height: 200,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.rectangle,
+                                  border: Border.all(color: Colors.black),
+                                  image: imagepath != null
+                                      ? DecorationImage(
+                                          image: NetworkImage(imagepath!),
+                                          fit: BoxFit.cover,
+                                        )
+                                      : null,
+                                ),
+                                child: imagepath == null
+                                    ? Center(
+                                        child: Text('No image selected'),
+                                      )
+                                    : null,
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: ElevatedButton(
+                            child: Text('SignInAnonyms'),
+                            onPressed: () async {
+                              // AuthServices;
+                            },
+                          )),
+                      Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: ElevatedButton(
+                            child: Text('UploadGambar'),
+                            onPressed: () async {
+                              File? file = await getImage();
+                              imagepath = await uploadImage(file!);
+
+                              setState(() {});
+                            },
+                          )),
                       Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: TextField(
@@ -121,6 +225,8 @@ class _Artikel extends State<Artikel> {
                           child: FloatingActionButton(
                               child: const Text('Post'),
                               onPressed: () {
+                                insertArtikel('iqnas', JudulController.text,
+                                    SubJudulController.text);
                                 setState(() {
                                   Judul.add(JudulController.text);
                                   SubJudul.add(SubJudulController.text);

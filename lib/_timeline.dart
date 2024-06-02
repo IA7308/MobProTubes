@@ -1,21 +1,13 @@
-import 'dart:ffi';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tubes/Model/timelinee.dart';
 import 'package:flutter_tubes/_sidebar.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_tubes/main.dart';
-import 'firebase_options.dart';
 
-List<String> Judul = [];
-List<String> SubJudul = [];
 TextEditingController JudulController = TextEditingController();
 TextEditingController SubJudulController = TextEditingController();
-List<bool> Likes = [];
 
-Future<List<Timelinee>> _timelineFuture = getTimeline();
+late Stream<List<Timelinee>> _timelineFuture;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,7 +44,7 @@ class _Timeline extends State<Timeline> {
   @override
   void initState() {
     super.initState();
-    _timelineFuture = getTimeline();
+    _timelineFuture = getTimelineStream();
   }
 
   @override
@@ -73,8 +65,8 @@ class _Timeline extends State<Timeline> {
       drawer: const Sidebar(
         selectedIndex: 4,
       ),
-      body: FutureBuilder<List<Timelinee>>(
-        future: _timelineFuture,
+      body: StreamBuilder<List<Timelinee>>(
+        stream: _timelineFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -84,32 +76,70 @@ class _Timeline extends State<Timeline> {
             return const Center(child: Text('No timeline entries found.'));
           } else {
             final data = snapshot.data!;
-            return ListView.builder(
-              itemCount: data.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  child: ListTile(
-                    leading: const CircleAvatar(
-                      child: Icon(Icons.person),
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 7.0),
+              child: ListView.separated(
+                itemCount: data.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    // leading: const CircleAvatar(
+                    //   child: Icon(Icons.person),
+                    // ),
+                    title: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: CircleAvatar(
+                            child: Icon(Icons.person),
+                            radius: 15.0,
+                          ),
+                        ),
+                        // Title in the middle
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Text(
+                              data[index].judul,
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.left,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+                        // GestureDetector with Icon on the right
+                        GestureDetector(
+                          onTap: () async {
+                            updateLikeStatus(data[index]);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Icon(
+                              data[index].like
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: data[index].like ? Colors.red : null,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    title: Text(data[index].judul),
-                    subtitle: Text(data[index].isi),
-                    trailing: GestureDetector(
-                      onTap: () async {
-                        //  setState(() {
-                        //    data[index].like = !data[index].like;
-                        //  });
-                        // Update the like status in Firestore
-                        updateLikeStatus(data[index]);
-                        _timelineFuture = getTimeline();
-                      },
-                      child: Icon(
-                        data[index].like
-                            ? Icons.favorite
-                            : Icons.favorite_border,
-                        color: data[index].like ? Colors.red : null,
-                      ),
+                    subtitle: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 53.0, vertical: 5.0),
+                      child: Text(data[index].isi),
                     ),
+                    // trailing: GestureDetector(
+                    //   onTap: () async {
+                    //     updateLikeStatus(data[index]);
+                    //   },
+                    //   child: Icon(
+                    //     data[index].like
+                    //         ? Icons.favorite
+                    //         : Icons.favorite_border,
+                    //     color: data[index].like ? Colors.red : null,
+                    //   ),
+                    // ),
                     onLongPress: () {
                       showDialog(
                           context: context,
@@ -121,15 +151,13 @@ class _Timeline extends State<Timeline> {
                               actions: [
                                 TextButton(
                                   onPressed: () async {
-                                    _timelineFuture = getTimeline();
                                     Navigator.pop(context);
                                   },
                                   child: const Text('Tidak'),
                                 ),
                                 TextButton(
-                                  onPressed: ()async {
+                                  onPressed: () async {
                                     deleteTimeline(data[index]);
-                                    _timelineFuture = getTimeline();
                                     Navigator.pop(context);
                                   },
                                   child: const Text(
@@ -141,9 +169,15 @@ class _Timeline extends State<Timeline> {
                             );
                           });
                     },
-                  ),
-                );
-              },
+                  );
+                },
+                separatorBuilder: (context, index) {
+                  return Divider(
+                    color: Colors.grey,
+                    thickness: 1,
+                  );
+                },
+              ),
             );
           }
         },
@@ -188,19 +222,12 @@ class _Timeline extends State<Timeline> {
                           child: FloatingActionButton(
                               child: const Text('Post'),
                               onPressed: () async {
-                                setState(() {
-                                  Judul.add(JudulController.text);
-                                  SubJudul.add(SubJudulController.text);
-                                  Likes.add(false);
-                                });
-
                                 insertTimeline('Iqnaz', JudulController.text,
                                     SubJudulController.text, false);
 
                                 JudulController.clear();
                                 SubJudulController.clear();
 
-                                _timelineFuture = getTimeline();
                                 Navigator.pop(context);
                               }),
                         ),

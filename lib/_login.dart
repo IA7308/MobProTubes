@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tubes/_dashboard.dart';
 import 'package:flutter_tubes/_register.dart';
+import 'package:flutter_tubes/main.dart';
+
+TextEditingController emailController = TextEditingController();
+TextEditingController passwordController = TextEditingController();
 
 void main() {
   runApp(const MyApp());
@@ -60,16 +64,18 @@ class _Login extends State<Login> {
                               fontFamily: 'Times New Roman'),
                         ),
                       ),
-                      const Padding(
+                      Padding(
                         padding: EdgeInsets.symmetric(vertical: 10.0),
                         child: TextField(
+                          controller: emailController,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(), labelText: 'Email'),
                         ),
                       ),
-                      const Padding(
+                      Padding(
                         padding: EdgeInsets.symmetric(vertical: 20.0),
                         child: TextField(
+                          controller: passwordController,
                           obscureText: true,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(),
@@ -85,8 +91,8 @@ class _Login extends State<Login> {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 5.0),
                                 child: ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.push(
+                                  onPressed: () {
+                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                             builder: (BuildContext context) {
@@ -94,12 +100,47 @@ class _Login extends State<Login> {
                                               title: 'HealthSis');
                                         }),
                                       );
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            Colors.red,
-                                        foregroundColor: Colors.white),
-                                    child: const Text('Login')),
+                                    // Memanggil LoginHandler.login untuk memeriksa kredensial pengguna
+                                    // bool success = await login(
+                                    //     emailController.text,
+                                    //     passwordController.text);
+
+                                    // if (success) {
+                                    //   // Jika autentikasi berhasil, pindah ke halaman dashboard
+                                    //   Navigator.push(
+                                    //     context,
+                                    //     MaterialPageRoute(
+                                    //         builder: (BuildContext context) {
+                                    //       return const Dashboard(
+                                    //           title: 'HealthSis');
+                                    //     }),
+                                    //   );
+                                    // } else {
+                                    //   // Jika autentikasi gagal, tampilkan pesan kesalahan
+                                    //   showDialog(
+                                    //     context: context,
+                                    //     builder: (context) => AlertDialog(
+                                    //       title: Text('Login Failed'),
+                                    //       content: Text(
+                                    //           'Invalid email or password. Please try again.'),
+                                    //       actions: [
+                                    //         TextButton(
+                                    //           onPressed: () {
+                                    //             Navigator.pop(context);
+                                    //           },
+                                    //           child: Text('OK'),
+                                    //         ),
+                                    //       ],
+                                    //     ),
+                                    //   );
+                                    // }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red,
+                                    foregroundColor: Colors.white,
+                                  ),
+                                  child: const Text('Login'),
+                                ),
                               ),
                               ElevatedButton(
                                   onPressed: () {
@@ -113,8 +154,7 @@ class _Login extends State<Login> {
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                          Colors.red,
+                                      backgroundColor: Colors.red,
                                       foregroundColor: Colors.white),
                                   child: const Text('Daftar')),
                             ]),
