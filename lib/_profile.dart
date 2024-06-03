@@ -103,7 +103,7 @@ class _Profile extends State<Profile> {
                         alignment: Alignment.center,
                         child: CircleAvatar(
                           radius: 100,
-                          backgroundImage: AssetImage(userData['photo']),
+                          backgroundImage: NetworkImage(userData['photo']),
                         ),
                       ),
                       SizedBox(height: 20.0),

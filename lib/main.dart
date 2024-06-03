@@ -11,7 +11,6 @@ import 'package:flutter_tubes/_page_awal.dart';
 import 'package:flutter_tubes/_timeline.dart';
 import 'package:flutter_tubes/firebase_options.dart';
 import 'package:flutter_tubes/Model/timelinee.dart';
-import 'package:flutter_tubes/Model/healthsis.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,7 +32,7 @@ void insertUser(String uid, String firstname, String lastname, String username, 
     'age': '',
     'birthday': '',
     'note': '',
-    'photo': 'images/Default.jpg',
+    'photo': 'https://firebasestorage.googleapis.com/v0/b/mobprotubes-1a30b.appspot.com/o/Default.jpg?alt=media&token=766800c7-998d-48a9-84de-58f07b65d9b8',
   });
 }
 
@@ -43,7 +42,7 @@ Future<DocumentSnapshot<Map<String, dynamic>>> getUserData(String uid) async {
   return userSnapshot;
 }
 
-void updateUserData(String uid, String username, String status, String phone, DateTime birthday, String note, String photo) {
+void updateUserData(String uid, String username, String phone, String status, DateTime birthday, String note, String photo) {
   CollectionReference users = FirebaseFirestore.instance.collection('HealthSis');
 
   // Hitung umur berdasarkan tanggal lahir
@@ -60,7 +59,7 @@ void updateUserData(String uid, String username, String status, String phone, Da
     'username': username,
     'status': status,
     'phone': phone,
-    'age': age.toString(), // Simpan umur sebagai string
+    'age': '$age tahun', // Simpan umur sebagai string
     'birthday': formattedBirthday, // Simpan tanggal lahir dalam format yang diinginkan
     'note': note,
     'photo': photo,
