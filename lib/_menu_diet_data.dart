@@ -8,15 +8,15 @@ class IsiDataMenu extends StatelessWidget {
   final String chef;
   final int kalori;
 
-  const IsiDataMenu({Key? key, required this.judul, required this.subJudul, required this.penjelasan, required this.chef, required this.kalori}) : super(key: key);
+  const IsiDataMenu({super.key, required this.judul, required this.subJudul, required this.penjelasan, required this.chef, required this.kalori});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 255, 169, 154),
+      backgroundColor: const Color.fromARGB(255, 255, 169, 154),
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 255, 169, 154),
-        title: Text('$judul'),
+        backgroundColor: const Color.fromARGB(255, 255, 169, 154),
+        title: Text(judul),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.filter_list),
@@ -32,24 +32,24 @@ class IsiDataMenu extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              '$judul',
-              style: TextStyle(fontSize: 24),
+              judul,
+              style: const TextStyle(fontSize: 24),
             ),
             Text(
-              '$subJudul',
-              style: TextStyle(fontSize: 18),
+              subJudul,
+              style: const TextStyle(fontSize: 18),
             ),
             Text(
-              '$penjelasan',
-              style: TextStyle(fontSize: 18),
+              penjelasan,
+              style: const TextStyle(fontSize: 18),
             ),
             Text(
-              '$chef',
-              style: TextStyle(fontSize: 18),
+              chef,
+              style: const TextStyle(fontSize: 18),
             ),
             Text(
               '$kalori',
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
           ],
         ),

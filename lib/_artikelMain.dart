@@ -5,14 +5,14 @@ class IsiArtikel extends StatelessWidget {
   final String judul;
   final String subJudul;
 
-  const IsiArtikel({Key? key, required this.judul, required this.subJudul}) : super(key: key);
+  const IsiArtikel({super.key, required this.judul, required this.subJudul});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 255, 169, 154),
-        title: Text('$judul'),
+        backgroundColor: const Color.fromARGB(255, 255, 169, 154),
+        title: Text(judul),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.filter_list),
@@ -28,12 +28,12 @@ class IsiArtikel extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              '$judul',
-              style: TextStyle(fontSize: 24),
+              judul,
+              style: const TextStyle(fontSize: 24),
             ),
             Text(
-              '$subJudul',
-              style: TextStyle(fontSize: 18),
+              subJudul,
+              style: const TextStyle(fontSize: 18),
             ),
           ],
         ),

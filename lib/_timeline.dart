@@ -87,11 +87,11 @@ class _Timeline extends State<Timeline> {
                     // ),
                     title: Row(
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8.0),
                           child: CircleAvatar(
-                            child: Icon(Icons.person),
                             radius: 15.0,
+                            child: Icon(Icons.person),
                           ),
                         ),
                         // Title in the middle
@@ -100,7 +100,7 @@ class _Timeline extends State<Timeline> {
                             padding: const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
                               data[index].judul,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 20, fontWeight: FontWeight.bold),
                               textAlign: TextAlign.left,
                               overflow: TextOverflow.ellipsis,
@@ -172,7 +172,7 @@ class _Timeline extends State<Timeline> {
                   );
                 },
                 separatorBuilder: (context, index) {
-                  return Divider(
+                  return const Divider(
                     color: Colors.grey,
                     thickness: 1,
                   );

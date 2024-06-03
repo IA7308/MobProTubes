@@ -1,10 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tubes/Model/healthsis.dart';
 import 'package:flutter_tubes/_edit_profile.dart';
 import 'package:flutter_tubes/_sidebar.dart';
-import 'package:flutter_tubes/main.dart';
-
-Future<List<HealthSis>> _userData = getHealthsis();
+import 'package:flutter_tubes/main.dart'; // Import file main.dart untuk menggunakan getUserData
 
 void main() {
   runApp(const MyApp());
@@ -37,114 +36,123 @@ class Profile extends StatefulWidget {
 }
 
 class _Profile extends State<Profile> {
+  late Future<DocumentSnapshot<Map<String, dynamic>>> userDataFuture;
+  late String uid; // Variabel untuk menyimpan UID pengguna yang login
+
   @override
   void initState() {
     super.initState();
-    _userData = getHealthsis();
+    // Dapatkan UID pengguna yang login dari Firebase Auth
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      uid = user.uid;
+      userDataFuture = getUserData(uid); // Panggil fungsi untuk mendapatkan data pengguna
+    }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 255, 169, 154),
+        backgroundColor: const Color.fromARGB(255, 255, 169, 154),
         title: Text(widget.title),
       ),
       backgroundColor: Colors.white,
-      body: FutureBuilder<List<HealthSis>>(
-        future: _userData,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No User entries found.'));
-          } else {
-            final data = snapshot.data!.first;
-            return SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        const Text(
-                          'Profile',
-                          style: TextStyle(
-                            fontSize: 25.0,
-                            fontFamily: 'Times New Roman',
-                            fontWeight: FontWeight.bold,
+      body: SingleChildScrollView(
+        child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+          future: userDataFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              if (snapshot.hasData && snapshot.data != null) {
+                Map<String, dynamic> userData = snapshot.data!.data()!;
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Text(
+                            'Profile',
+                            style: TextStyle(
+                              fontSize: 25.0,
+                              fontFamily: 'Times New Roman',
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        const Spacer(),
-                        IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (BuildContext context) {
-                                return const EditProfile(title: 'HealthSis');
-                              }),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20.0),
-                    const Align(
-                      alignment: Alignment.center,
-                      child: CircleAvatar(
-                        radius: 100,
-                        backgroundImage: AssetImage('images/Default.jpg'),
+                          const Spacer(),
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (BuildContext context) {
+                                  return const EditProfile(title: 'HealthSis');
+                                }),
+                              );
+                            },
+                          ),
+                        ],
                       ),
-                    ),
-                    const SizedBox(height: 20.0),
-                    ListView(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      children: [
-                        Card(
-                          child: ListTile(
-                            leading: Icon(Icons.person),
-                            title: Text(data.username),
-                          ),
+                      const SizedBox(height: 20.0),
+                      Align(
+                        alignment: Alignment.center,
+                        child: CircleAvatar(
+                          radius: 100,
+                          backgroundImage: AssetImage(userData['photo']),
                         ),
-                        Card(
-                          child: ListTile(
-                            leading: Icon(Icons.phone),
-                            title: Text(data.phone.toString()),
+                      ),
+                      const SizedBox(height: 20.0),
+                      ListView(
+                        shrinkWrap: true,
+                        children: [
+                          Card(
+                            child: ListTile(
+                              leading: const Icon(Icons.person),
+                              title: Text('${userData['username']}'),
+                            ),
                           ),
-                        ),
-                        Card(
-                          child: ListTile(
-                            leading: Icon(Icons.info),
-                            title: Text(data.status),
+                          Card(
+                            child: ListTile(
+                              leading: const Icon(Icons.phone),
+                              title: Text('${userData['phone']}'),
+                            ),
                           ),
-                        ),
-                        Card(
-                          child: ListTile(
-                            leading: Icon(Icons.calendar_today),
-                            title: Text(data.age),
+                          Card(
+                            child: ListTile(
+                              leading: const Icon(Icons.info),
+                              title: Text('${userData['status']}'),
+                            ),
                           ),
-                        ),
-                        Card(
-                          child: ListTile(
-                            leading: Icon(Icons.note),
-                            title: Text(data.note),
+                          Card(
+                            child: ListTile(
+                              leading: const Icon(Icons.calendar_today),
+                              title: Text('${userData['age']}'),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }
-        },
+                          Card(
+                            child: ListTile(
+                              leading: const Icon(Icons.note),
+                              title: Text('${userData['note']}'),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              } else {
+                return const Text('Data not found.');
+              }
+            }
+          },
+        ),
       ),
-      drawer: const Sidebar(selectedIndex: 3),
+      drawer: const Sidebar(selectedIndex: 3,),
     );
   }
 }

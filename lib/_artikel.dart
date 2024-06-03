@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tubes/Model/Artikell.dart';
 import 'package:flutter_tubes/_artikelMain.dart';
@@ -59,7 +58,7 @@ class _Artikel extends State<Artikel> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 255, 169, 154),
+        backgroundColor: const Color.fromARGB(255, 255, 169, 154),
         title: Text(widget.title),
         actions: <Widget>[
           IconButton(
@@ -77,7 +76,7 @@ class _Artikel extends State<Artikel> {
         stream: artikelFuture,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
           var articles = snapshot.data!;
           return ListView.builder(
@@ -101,7 +100,7 @@ class _Artikel extends State<Artikel> {
                         ),
                       );
                     },
-                    child: Text('More'),
+                    child: const Text('More'),
                   ),
                   onLongPress: () {
                     showDialog(
@@ -139,7 +138,7 @@ class _Artikel extends State<Artikel> {
         },
       ),
       floatingActionButton: ElevatedButton(
-          child: Icon(Icons.add),
+          child: const Icon(Icons.add),
           onPressed: () {
             showDialog(
               context: context,
@@ -174,7 +173,7 @@ class _Artikel extends State<Artikel> {
                                       : null,
                                 ),
                                 child: imagepath == null
-                                    ? Center(
+                                    ? const Center(
                                         child: Text('No image selected'),
                                       )
                                     : null,
@@ -186,7 +185,7 @@ class _Artikel extends State<Artikel> {
                       Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: ElevatedButton(
-                            child: Text('SignInAnonyms'),
+                            child: const Text('SignInAnonyms'),
                             onPressed: () async {
                               // AuthServices;
                             },
@@ -194,10 +193,10 @@ class _Artikel extends State<Artikel> {
                       Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: ElevatedButton(
-                            child: Text('UploadGambar'),
+                            child: const Text('UploadGambar'),
                             onPressed: () async {
                               File? file = await getImage();
-                              imagepath = await uploadImage(file!);
+                              imagepath = await uploadsImage(file!);
 
                               setState(() {});
                             },

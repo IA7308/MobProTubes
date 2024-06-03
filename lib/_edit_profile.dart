@@ -1,31 +1,17 @@
+import 'dart:async';
 import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:flutter/services.dart';
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'EDIT PROFILE',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const EditProfile(title: 'HealthSis'),
-      debugShowCheckedModeBanner: false,
-    );
-  }
-}
+import 'package:flutter_tubes/_profile.dart';
+import 'package:flutter_tubes/main.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 class EditProfile extends StatefulWidget {
-  const EditProfile({Key? key, required this.title}) : super(key: key);
+  const EditProfile({super.key, required this.title});
 
   final String title;
 
@@ -34,23 +20,100 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfile extends State<EditProfile> {
-  final _formKey = GlobalKey<FormState>();
-  TextEditingController _dateController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _statusController = TextEditingController();
+  final TextEditingController _noteController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
   File? _imageFile;
   final ImagePicker _picker = ImagePicker();
+  late String uid;
+  late Future<DocumentSnapshot<Map<String, dynamic>>> userDataFuture;
+  String? usernameError;
+  String? phoneError;
+  String? statusError;
+  String? noteError;
+  String? dateError;
+
+  @override
+  void initState() {
+    super.initState();
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      uid = user.uid;
+      userDataFuture = getUserData(uid);
+      userDataFuture.then((snapshot) {
+        if (snapshot.data() != null) {
+          Map<String, dynamic> userData = snapshot.data()!;
+          _usernameController.text = userData['username'] ?? '';
+          _phoneController.text = userData['phone'] ?? '';
+          _statusController.text = userData['status'] ?? '';
+          _noteController.text = userData['note'] ?? '';
+          _dateController.text = userData['birthday'] ?? '';
+        }
+      });
+    }
+  }
+
+  void _saveData() async {
+    String username = _usernameController.text;
+    String phone = _phoneController.text;
+    String status = _statusController.text;
+    String note = _noteController.text;
+    DateTime? date = parseDate(_dateController.text);
+
+    setState(() {
+      usernameError = username.isEmpty ? "Username tidak boleh kosong" : null;
+      phoneError = phone.isEmpty ? "No HP tidak boleh kosong" : null;
+      statusError = status.isEmpty ? "Status tidak boleh kosong" : null;
+      noteError = note.isEmpty ? "Note tidak boleh kosong" : null;
+      dateError = date == null ? "Tanggal tidak boleh kosong" : null;
+    });
+
+    if (usernameError == null &&
+        phoneError == null &&
+        statusError == null &&
+        noteError == null &&
+        dateError == null) {
+      if (_imageFile != null) {
+        String imageUrl = await uploadImage(_imageFile!);
+        updateUserData(uid, username, phone, status, date!, note, imageUrl);
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Data berhasil disimpan')),
+      );
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (BuildContext context) {
+          return const Profile(title: 'HealthSis');
+        }),
+      );
+    }
+  }
 
   Future<void> _selectDate() async {
-    DateTime? _picked = await showDatePicker(
+    DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(1945),
       lastDate: DateTime(2100),
     );
 
-    if (_picked != null) {
+    if (picked != null) {
       setState(() {
-        _dateController.text = _picked.toString().split(" ")[0];
+        _dateController.text = DateFormat('dd MMMM yyyy').format(picked);
       });
+    }
+  }
+
+  DateTime? parseDate(String dateString) {
+    try {
+      return DateFormat('dd MMMM yyyy').parse(dateString);
+    } catch (e) {
+      print('Error parsing date: $e');
+      return null;
     }
   }
 
@@ -68,165 +131,165 @@ class _EditProfile extends State<EditProfile> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.arrow_back),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                    const Spacer(),
-                    const Text(
-                      'Edit Profile',
-                      style: TextStyle(
-                        fontSize: 25.0,
-                        fontFamily: 'Times New Roman',
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const Spacer(),
-                    IconButton(
-                      icon: const Icon(Icons.save),
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Data berhasil disimpan')),
-                          );
-                        }
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20.0),
-                GestureDetector(
-                  onTap: () {
-                    showModalBottomSheet<void>(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return Container(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              ListTile(
-                                leading: const Icon(Icons.folder),
-                                title: const Text('Pilih dari Folder'),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  _pickImage(ImageSource.gallery);
-                                },
-                              ),
-                              ListTile(
-                                leading: const Icon(Icons.camera_alt),
-                                title: const Text('Ambil Gambar'),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  _pickImage(ImageSource.camera);
-                                },
-                              ),
-                              ListTile(
-                                leading: const Icon(
-                                  Icons.delete,
-                                  color: Colors.red,
-                                ),
-                                title: const Text(
-                                  'Hapus Gambar',
-                                  style: TextStyle(color: Colors.red),
-                                ),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  setState(() {
-                                    _imageFile = null;
-                                  });
-                                },
-                              ),
-                            ],
+        child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+          future: userDataFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              if (snapshot.hasData && snapshot.data != null) {
+                Map<String, dynamic> userData = snapshot.data!.data()!;
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.arrow_back),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
                           ),
-                        );
-                      },
-                    );
-                  },
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: CircleAvatar(
-                      radius: 100,
-                      backgroundImage: _imageFile != null
-                          ? FileImage(_imageFile!)
-                          : const AssetImage('images/Default.jpg') as ImageProvider,
-                    ),
+                          const Spacer(),
+                          const Text(
+                            'Edit Profile',
+                            style: TextStyle(
+                              fontSize: 25.0,
+                              fontFamily: 'Times New Roman',
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const Spacer(),
+                          IconButton(
+                            icon: const Icon(Icons.save),
+                            onPressed: _saveData,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20.0),
+                      GestureDetector(
+                          onTap: () {
+                            showModalBottomSheet<void>(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Container(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      ListTile(
+                                        leading: const Icon(Icons.folder),
+                                        title: const Text('Pilih dari Folder'),
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                          _pickImage(ImageSource.gallery);
+                                        },
+                                      ),
+                                      ListTile(
+                                        leading: const Icon(Icons.camera_alt),
+                                        title: const Text('Ambil Gambar'),
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                          _pickImage(ImageSource.camera);
+                                        },
+                                      ),
+                                      ListTile(
+                                        leading: const Icon(
+                                          Icons.delete,
+                                          color: Colors.red,
+                                        ),
+                                        title: const Text(
+                                          'Hapus Gambar',
+                                          style: TextStyle(color: Colors.red),
+                                        ),
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                          setState(() {
+                                            _imageFile = null;
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: CircleAvatar(
+                              radius: 100,
+                              backgroundImage: _imageFile != null
+                                  ? FileImage(_imageFile!)
+                                  : userData['photo'] != null
+                                      ? NetworkImage(userData['photo'])
+                                      : const AssetImage('images/Default.jpg')
+                                          as ImageProvider<Object>?,
+                            ),
+                          )),
+                      const SizedBox(height: 20.0),
+                      TextField(
+                        controller: _usernameController,
+                        decoration: InputDecoration(
+                          labelText: 'Username',
+                          errorText: usernameError,
+                        ),
+                      ),
+                      const SizedBox(height: 20.0),
+                      TextField(
+                        controller: _phoneController,
+                        decoration: InputDecoration(
+                          labelText: 'No HP',
+                          errorText: phoneError,
+                        ),
+                        keyboardType: TextInputType.phone,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                      ),
+                      const SizedBox(height: 20.0),
+                      TextField(
+                        controller: _statusController,
+                        decoration: InputDecoration(
+                          labelText: 'Status',
+                          errorText: statusError,
+                        ),
+                      ),
+                      const SizedBox(height: 20.0),
+                      TextField(
+                        controller: _dateController,
+                        decoration: InputDecoration(
+                          labelText: 'Tanggal Lahir',
+                          errorText: dateError,
+                          suffixIcon: IconButton(
+                            icon: const Icon(Icons.calendar_today),
+                            onPressed: () {
+                              _selectDate();
+                            },
+                          ),
+                        ),
+                        readOnly: true,
+                      ),
+                      const SizedBox(height: 20.0),
+                      TextField(
+                        controller: _noteController,
+                        decoration: InputDecoration(
+                          labelText: 'Catatan',
+                          errorText: noteError,
+                        ),
+                        maxLines: 3,
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 20.0),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'Username'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Username tidak boleh kosong';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'No HP'),
-                  keyboardType: TextInputType.phone,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly
-                  ], // Hanya menerima input angka
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'No HP tidak boleh kosong';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 20.0),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'Status'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Status tidak boleh kosong';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 20.0),
-                TextFormField(
-                  controller: _dateController,
-                  decoration: const InputDecoration(
-                    labelText: 'Umur',
-                    suffixIcon: Icon(Icons.calendar_today),
-                  ),
-                  readOnly: true,
-                  onTap: () {
-                    _selectDate();
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Umur tidak boleh kosong';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 20.0),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'Note'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Note tidak boleh kosong';
-                    }
-                    return null;
-                  },
-                ),
-              ],
-            ),
-          ),
+                );
+              } else {
+                return Container();
+              }
+            }
+          },
         ),
       ),
     );

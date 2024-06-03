@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tubes/_login.dart';
+import 'package:flutter_tubes/firebase_auth_services.dart';
 import 'package:flutter_tubes/main.dart';
 
 void main() {
@@ -33,6 +35,7 @@ class Register extends StatefulWidget {
 }
 
 class _Register extends State<Register> {
+  final FirebaseAuthService _auth = FirebaseAuthService();
   TextEditingController firstnameController = TextEditingController();
   TextEditingController lastnameController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
@@ -46,65 +49,18 @@ class _Register extends State<Register> {
   String? emailError;
   String? passwordError;
   String? rePasswordError;
+  bool passwordVisible = false;
+  bool rePasswordVisible = false;
 
-  void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
-  }
-
-  void handleRegister() {
-    setState(() {
-      firstnameError = firstnameController.text.isEmpty
-          ? "First name tidak boleh kosong"
-          : null;
-      lastnameError = lastnameController.text.isEmpty
-          ? "Last name tidak boleh kosong"
-          : null;
-      usernameError = usernameController.text.isEmpty
-          ? "Username tidak boleh kosong"
-          : null;
-      emailError =
-          emailController.text.isEmpty ? "Email tidak boleh kosong" : null;
-      passwordError = passwordController.text.isEmpty
-          ? "Password tidak boleh kosong"
-          : null;
-      rePasswordError = rePasswordController.text.isEmpty
-          ? "Re-password tidak boleh kosong"
-          : null;
-    });
-
-    if (passwordController.text != rePasswordController.text) {
-      setState(() {
-        rePasswordError = "Password dan Re-password tidak sama";
-      });
-      return;
-    }
-
-    if (firstnameError == null &&
-        lastnameError == null &&
-        usernameError == null &&
-        emailError == null &&
-        passwordError == null &&
-        rePasswordError == null) {
-      insertHealthsis(
-          firstnameController.text,
-          lastnameController.text,
-          usernameController.text,
-          emailController.text,
-          passwordController.text);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Data berhasil disimpan')),
-      );
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (BuildContext context) {
-          return const Login(title: 'HealthSis');
-        }),
-      );
-    }
+  @override
+  void dispose() {
+    firstnameController.dispose();
+    lastnameController.dispose();
+    usernameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    rePasswordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -142,7 +98,7 @@ class _Register extends State<Register> {
                         child: TextField(
                           controller: firstnameController,
                           decoration: InputDecoration(
-                              border: OutlineInputBorder(),
+                              border: const OutlineInputBorder(),
                               labelText: 'First Name',
                               errorText: firstnameError),
                         ),
@@ -152,7 +108,7 @@ class _Register extends State<Register> {
                         child: TextField(
                           controller: lastnameController,
                           decoration: InputDecoration(
-                              border: OutlineInputBorder(),
+                              border: const OutlineInputBorder(),
                               labelText: 'Last Name',
                               errorText: lastnameError),
                         ),
@@ -163,7 +119,7 @@ class _Register extends State<Register> {
                   TextField(
                     controller: usernameController,
                     decoration: InputDecoration(
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                         labelText: 'Username',
                         errorText: usernameError),
                   ),
@@ -173,7 +129,7 @@ class _Register extends State<Register> {
                     child: TextField(
                       controller: emailController,
                       decoration: InputDecoration(
-                          border: OutlineInputBorder(),
+                          border: const OutlineInputBorder(),
                           labelText: 'Email',
                           errorText: emailError),
                     ),
@@ -183,11 +139,24 @@ class _Register extends State<Register> {
                     padding: const EdgeInsets.symmetric(vertical: 0),
                     child: TextField(
                       controller: passwordController,
-                      obscureText: true,
+                      obscureText: !passwordVisible,
                       decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Password',
-                          errorText: passwordError),
+                        border: const OutlineInputBorder(),
+                        labelText: 'Password',
+                        errorText: passwordError,
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            passwordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              passwordVisible = !passwordVisible;
+                            });
+                          },
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 20.0),
@@ -195,18 +164,29 @@ class _Register extends State<Register> {
                     padding: const EdgeInsets.symmetric(vertical: 0),
                     child: TextField(
                       controller: rePasswordController,
-                      obscureText: true,
+                      obscureText: !passwordVisible,
                       decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Re-Password',
-                          errorText: rePasswordError),
+                        border: const OutlineInputBorder(),
+                        labelText: 'Re-Password',
+                        errorText: rePasswordError,
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            rePasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              rePasswordVisible = !rePasswordVisible;
+                            });
+                          },
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 20.0),
                   ElevatedButton(
-                    onPressed: () {
-                      handleRegister();
-                    },
+                    onPressed: _signUp,
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
                         foregroundColor: Colors.white),
@@ -235,5 +215,68 @@ class _Register extends State<Register> {
         ),
       ),
     );
+  }
+
+  void _signUp() async {
+    String firstname = firstnameController.text;
+    String lastname = lastnameController.text;
+    String username = usernameController.text;
+    String email = emailController.text;
+    String password = passwordController.text;
+
+    setState(() {
+      firstnameError = firstnameController.text.isEmpty
+          ? "First name tidak boleh kosong"
+          : null;
+      lastnameError = lastnameController.text.isEmpty
+          ? "Last name tidak boleh kosong"
+          : null;
+      usernameError = usernameController.text.isEmpty
+          ? "Username tidak boleh kosong"
+          : null;
+      emailError =
+          emailController.text.isEmpty ? "Email tidak boleh kosong" : null;
+      passwordError = passwordController.text.isEmpty
+          ? "Password tidak boleh kosong"
+          : null;
+      rePasswordError = rePasswordController.text.isEmpty
+          ? "Re-password tidak boleh kosong"
+          : null;
+    });
+
+    if (passwordController.text != rePasswordController.text) {
+      setState(() {
+        rePasswordError = "Password dan Re-password tidak sama";
+      });
+      return;
+    }
+
+    if (firstnameError == null &&
+        lastnameError == null &&
+        usernameError == null &&
+        emailError == null &&
+        passwordError == null &&
+        rePasswordError == null) {
+      User? user = await _auth.signUp(email, password);
+
+      if (user != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Data berhasil disimpan')),
+        );
+
+        print("User berhasil dibuat");
+
+        insertUser(user.uid, firstname, lastname, username, email);
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (BuildContext context) {
+            return const Login(title: 'HealthSis');
+          }),
+        );
+      } else {
+        print("Gagal");
+      }
+    }
   }
 }

@@ -1,18 +1,15 @@
-import 'dart:ffi';
 import 'dart:io';
-import 'package:crypt/crypt.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path/path.dart';
+import 'package:intl/intl.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tubes/Model/Artikell.dart';
 import 'package:flutter_tubes/_page_awal.dart';
-import 'package:flutter_tubes/_timeline.dart';
 import 'package:flutter_tubes/firebase_options.dart';
 import 'package:flutter_tubes/Model/timelinee.dart';
-import 'package:flutter_tubes/Model/healthsis.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,91 +21,67 @@ Future<void> main() async {
 
 //PROFILE, REGISTER, LOGIN;
 
-void insertHealthsis(String firstname, String lastname, String username,
-    String email, String password) {
-  String hashedPassword = Crypt.sha256(password).toString();
-  CollectionReference collReff =
+void insertUser(String uid, String firstname, String lastname, String username,
+    String email) {
+  CollectionReference users =
       FirebaseFirestore.instance.collection('HealthSis');
-  collReff.add({
+  users.doc(uid).set({
     'firstname': firstname,
     'lastname': lastname,
     'username': username,
     'email': email,
-    'password': password,
-    'status': null,
-    'phone': null,
-    'age': null,
-    'birthday': null,
-    'note': null,
-    'photo': 'images/Default.jpg'
+    'status': '',
+    'phone': '',
+    'age': '',
+    'birthday': '',
+    'note': '',
+    'photo': 'images/Default.jpg',
   });
 }
 
-void deleteHealthsis(HealthSis entry) {
-  CollectionReference collReff =
-      FirebaseFirestore.instance.collection('HealthSis');
-  collReff.doc(entry.id).delete();
+Future<DocumentSnapshot<Map<String, dynamic>>> getUserData(String uid) async {
+  DocumentSnapshot<Map<String, dynamic>> userSnapshot =
+      await FirebaseFirestore.instance.collection('HealthSis').doc(uid).get();
+  return userSnapshot;
 }
 
-void updateProfile(String docId, String username, String status, String phone,
-    String age, String birthday, String note, String photo) {
-  CollectionReference collReff =
+void updateUserData(String uid, String username, String status, String phone,
+    DateTime birthday, String note, String photo) {
+  CollectionReference users =
       FirebaseFirestore.instance.collection('HealthSis');
-  collReff.doc(docId).update({
+
+  // Hitung umur berdasarkan tanggal lahir
+  int age = DateTime.now().year - birthday.year;
+  if (DateTime.now().month < birthday.month ||
+      (DateTime.now().month == birthday.month &&
+          DateTime.now().day < birthday.day)) {
+    age--;
+  }
+
+  // Format tanggal lahir menjadi string dengan format 'dd MMMM yyyy'
+  String formattedBirthday = DateFormat('dd MMMM yyyy').format(birthday);
+
+  users.doc(uid).update({
     'username': username,
     'status': status,
     'phone': phone,
-    'age': age,
-    'birthday': birthday,
+    'age': age.toString(), // Simpan umur sebagai string
+    'birthday':
+        formattedBirthday, // Simpan tanggal lahir dalam format yang diinginkan
     'note': note,
     'photo': photo,
   });
 }
 
-Future<List<HealthSis>> getHealthsis() async {
-  CollectionReference collReff =
-      FirebaseFirestore.instance.collection('HealthSis');
-  QuerySnapshot querySnapshot = await collReff.get();
+Future<String> uploadImage(File imageFile) async {
+  String filename = basename(imageFile.path);
 
-  return querySnapshot.docs.map((doc) => HealthSis.fromDocument(doc)).toList();
+  Reference ref = FirebaseStorage.instance.ref().child(filename);
+  UploadTask task = ref.putFile(imageFile);
+  TaskSnapshot snapshot = await task.whenComplete(() => {});
+
+  return await snapshot.ref.getDownloadURL();
 }
-
-
-Future<bool> login(String email, String password) async {
-  try {
-    // Ambil data pengguna berdasarkan email dari Firestore
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('HealthSis')
-        .where('email', isEqualTo: email)
-        .get();
-
-    // Jika tidak ada pengguna dengan email yang cocok, kembalikan false
-    if (querySnapshot.size == 0) {
-      return false;
-    }
-
-    // Validasi password
-    String hashedPasswordFromDB = querySnapshot.docs.first.get('password');
-    // String passwrodDB = decrypt.sha256(hashedPasswordFromDB).toString();
-    String hashedPasswordInput = Crypt.sha256(password).toString();
-
-    print(hashedPasswordInput + " dan \t"+ hashedPasswordFromDB );
-
-    // Jika password tidak sesuai, kembalikan false
-    if (hashedPasswordFromDB != hashedPasswordInput) {
-      return false;
-    }
-
-    // Jika email dan password cocok, kembalikan true
-    return true;
-  } catch (e) {
-    // Tangani kesalahan jika terjadi
-    print('Error during login: $e');
-    return false;
-  }
-}
-
-//TIMELINE CRUD
 
 void insertTimeline(String name, String judul, String isi, bool like) {
   CollectionReference collReff =
@@ -142,41 +115,48 @@ void updateTimeline(String docId, String judul, String isi) {
 }
 
 Stream<List<Timelinee>> getTimelineStream() {
-  CollectionReference collReff = FirebaseFirestore.instance.collection('Timeline');
+  CollectionReference collReff =
+      FirebaseFirestore.instance.collection('Timeline');
   return collReff.snapshots().map((QuerySnapshot querySnapshot) {
-    return querySnapshot.docs.map((doc) => Timelinee.fromDocument(doc)).toList();
+    return querySnapshot.docs
+        .map((doc) => Timelinee.fromDocument(doc))
+        .toList();
   });
 }
 
-
 //Upload Gambar
-  Future<String> uploadImage(File imageName) async {
-    String filename = basename(imageName.path);
-    
-    FirebaseStorage storage = FirebaseStorage.instance;
-    Reference ref = storage.ref().child(filename);
-    UploadTask uploadTask = ref.putFile(imageName);
-    TaskSnapshot snapshot = await uploadTask.whenComplete(() => null);
-    
-    return await snapshot.ref.getDownloadURL();
-  }
-//Get Image
-  Future<File?> getImage() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+Future<String> uploadsImage(File imageName) async {
+  String filename = basename(imageName.path);
 
-    if (pickedFile != null) {
+  FirebaseStorage storage = FirebaseStorage.instance;
+  Reference ref = storage.ref().child(filename);
+  UploadTask uploadTask = ref.putFile(imageName);
+  TaskSnapshot snapshot = await uploadTask.whenComplete(() => null);
+
+  return await snapshot.ref.getDownloadURL();
+}
+
+//Get Image
+Future<File?> getImage() async {
+  final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+  if (pickedFile != null) {
     return File(pickedFile.path);
   } else {
     return null;
   }
-  }
+}
 
 //ARTIKEL CRUD
 
 void insertArtikel(String name, String judul, String isi) {
   CollectionReference collReff =
       FirebaseFirestore.instance.collection('Artikel');
-  collReff.add({'name': name, 'judul': judul, 'isi': isi,});
+  collReff.add({
+    'name': name,
+    'judul': judul,
+    'isi': isi,
+  });
 }
 
 void deleteArtikel(Artikell entry) {
@@ -195,16 +175,15 @@ void updateArtikel(String docId, String judul, String isi) {
 }
 
 Stream<List<Artikell>> getArtikellStream() {
-  CollectionReference collReff = FirebaseFirestore.instance.collection('Artikel');
+  CollectionReference collReff =
+      FirebaseFirestore.instance.collection('Artikel');
   return collReff.snapshots().map((QuerySnapshot querySnapshot) {
     return querySnapshot.docs.map((doc) => Artikell.fromDocument(doc)).toList();
   });
 }
 
-
-
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {

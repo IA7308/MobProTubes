@@ -3,7 +3,7 @@ import 'package:flutter_tubes/_login.dart';
 import 'package:flutter_tubes/_register.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -18,6 +18,8 @@ class MyApp extends StatelessWidget {
 }
 
 class PageAwal extends StatefulWidget {
+  const PageAwal({super.key});
+
   @override
   _PageAwal createState() => _PageAwal();
 }
@@ -26,7 +28,7 @@ class _PageAwal extends State<PageAwal> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 255, 169, 154),
+      backgroundColor: const Color.fromARGB(255, 255, 169, 154),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -49,7 +51,7 @@ class _PageAwal extends State<PageAwal> {
               ),
             ),
             const SizedBox(height: 20),
-            Container(
+            SizedBox(
               width: 200,
               height: 45,
               child: TextButton(
@@ -76,7 +78,7 @@ class _PageAwal extends State<PageAwal> {
               ),
             ),
             const SizedBox(height: 10),
-            Container(
+            SizedBox(
               width: 200,
               height: 45,
               child: TextButton(

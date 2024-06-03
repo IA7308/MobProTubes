@@ -38,7 +38,7 @@ class _MenuDiet extends State<MenuDiet> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Color.fromARGB(255, 255, 169, 154),
+          backgroundColor: const Color.fromARGB(255, 255, 169, 154),
           title: Text(widget.title),
           actions: <Widget>[
             IconButton(
@@ -81,7 +81,7 @@ class _MenuDiet extends State<MenuDiet> {
                     items: [
                       Container(
                         margin: const EdgeInsets.all(5.0),
-                        color: Color.fromARGB(255, 255, 169, 154),
+                        color: const Color.fromARGB(255, 255, 169, 154),
                         child: Center(
                           child: Image.asset( 
                             'images/Food_7.jpg', // Ganti dengan path gambar yang sesuai
@@ -94,7 +94,7 @@ class _MenuDiet extends State<MenuDiet> {
 
                       Container(
                         margin: const EdgeInsets.all(5.0),
-                        color: Color.fromARGB(255, 255, 169, 154),
+                        color: const Color.fromARGB(255, 255, 169, 154),
                         child: Center(
                           child: Image.asset( 
                             'images/Food_6.jpg', // Ganti dengan path gambar yang sesuai
@@ -107,7 +107,7 @@ class _MenuDiet extends State<MenuDiet> {
 
                        Container(
                         margin: const EdgeInsets.all(5.0),
-                        color: Color.fromARGB(255, 255, 169, 154),
+                        color: const Color.fromARGB(255, 255, 169, 154),
                         child: Center(
                           child: Image.asset( 
                             'images/Food_5.jpg', // Ganti dengan path gambar yang sesuai
@@ -131,7 +131,7 @@ class _MenuDiet extends State<MenuDiet> {
                   ),
                   delegate: SliverChildListDelegate([
                     Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         image: DecorationImage(
                           image: AssetImage('images/Food_5.jpg'),
                           fit: BoxFit.cover,
@@ -176,7 +176,7 @@ class _MenuDiet extends State<MenuDiet> {
                                     Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => IsiDataMenu(
+                              builder: (context) => const IsiDataMenu(
                                 judul: 'Special Healthy Rice',
                                 subJudul: '',
                                 penjelasan: 'Makanan diet yang terdiri dari salmon, sayuran, dan telur adalah pilihan yang baik untuk menjaga kesehatan dan membantu dalam proses penurunan berat badan',
@@ -193,7 +193,7 @@ class _MenuDiet extends State<MenuDiet> {
                     ),
 
                     Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         image: DecorationImage(
                           image: AssetImage('images/Food_6.jpg'),
                           fit: BoxFit.cover,
@@ -238,7 +238,7 @@ class _MenuDiet extends State<MenuDiet> {
                                     Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => IsiDataMenu(
+                              builder: (context) => const IsiDataMenu(
                                 judul: 'Healthy Vegetables Tuna',
                                 subJudul: '',
                                 penjelasan: 'Makanan diet yang terdiri dari salmon, sayuran, dan telur adalah pilihan yang baik untuk menjaga kesehatan dan membantu dalam proses penurunan berat badan',
@@ -254,7 +254,7 @@ class _MenuDiet extends State<MenuDiet> {
                       ),
                     ),
                     Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         image: DecorationImage(
                           image: AssetImage('images/Food_7.jpg'),
                           fit: BoxFit.cover,
@@ -299,7 +299,7 @@ class _MenuDiet extends State<MenuDiet> {
                                     Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => IsiDataMenu(
+                              builder: (context) => const IsiDataMenu(
                                 judul: 'Vegetables With Chicken Roast ',
                                 subJudul: '',
                                 penjelasan: 'Makanan diet yang terdiri dari salmon, sayuran, dan telur adalah pilihan yang baik untuk menjaga kesehatan dan membantu dalam proses penurunan berat badan',
@@ -315,7 +315,7 @@ class _MenuDiet extends State<MenuDiet> {
                       ),
                     ),
                     Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         image: DecorationImage(
                           image: AssetImage('images/Food_9.jpg'),
                           fit: BoxFit.cover,
@@ -360,7 +360,7 @@ class _MenuDiet extends State<MenuDiet> {
                                     Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => IsiDataMenu(
+                              builder: (context) => const IsiDataMenu(
                                 judul: 'Sweety Salmon',
                                 subJudul: '',
                                 penjelasan: 'Makanan diet yang terdiri dari salmon, sayuran, dan telur adalah pilihan yang baik untuk menjaga kesehatan dan membantu dalam proses penurunan berat badan',

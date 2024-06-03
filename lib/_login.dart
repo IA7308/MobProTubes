@@ -1,10 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tubes/_dashboard.dart';
 import 'package:flutter_tubes/_register.dart';
-import 'package:flutter_tubes/main.dart';
-
-TextEditingController emailController = TextEditingController();
-TextEditingController passwordController = TextEditingController();
+import 'package:flutter_tubes/firebase_auth_services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -37,11 +35,26 @@ class Login extends StatefulWidget {
 }
 
 class _Login extends State<Login> {
+  final FirebaseAuthService _auth = FirebaseAuthService();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  String? emailError;
+  String? passwordError;
+  bool passwordVisible = false;
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Color.fromARGB(255, 255, 169, 154),
+          backgroundColor: const Color.fromARGB(255, 255, 169, 154),
           title: Text(widget.title),
         ),
         body: Padding(
@@ -65,21 +78,38 @@ class _Login extends State<Login> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10.0),
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
                         child: TextField(
                           controller: emailController,
                           decoration: InputDecoration(
-                              border: OutlineInputBorder(), labelText: 'Email'),
+                            border: const OutlineInputBorder(),
+                            labelText: 'Email',
+                            errorText: emailError,
+                          ),
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.symmetric(vertical: 20.0),
+                        padding: const EdgeInsets.symmetric(vertical: 20.0),
                         child: TextField(
                           controller: passwordController,
-                          obscureText: true,
+                          obscureText: !passwordVisible,
                           decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Password'),
+                            border: const OutlineInputBorder(),
+                            labelText: 'Password',
+                            errorText: passwordError,
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                passwordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  passwordVisible = !passwordVisible;
+                                });
+                              },
+                            ),
+                          ),
                         ),
                       ),
                       Padding(
@@ -91,56 +121,11 @@ class _Login extends State<Login> {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 5.0),
                                 child: ElevatedButton(
-                                  onPressed: () {
-                                     Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (BuildContext context) {
-                                          return const Dashboard(
-                                              title: 'HealthSis');
-                                        }),
-                                      );
-                                    // Memanggil LoginHandler.login untuk memeriksa kredensial pengguna
-                                    // bool success = await login(
-                                    //     emailController.text,
-                                    //     passwordController.text);
-
-                                    // if (success) {
-                                    //   // Jika autentikasi berhasil, pindah ke halaman dashboard
-                                    //   Navigator.push(
-                                    //     context,
-                                    //     MaterialPageRoute(
-                                    //         builder: (BuildContext context) {
-                                    //       return const Dashboard(
-                                    //           title: 'HealthSis');
-                                    //     }),
-                                    //   );
-                                    // } else {
-                                    //   // Jika autentikasi gagal, tampilkan pesan kesalahan
-                                    //   showDialog(
-                                    //     context: context,
-                                    //     builder: (context) => AlertDialog(
-                                    //       title: Text('Login Failed'),
-                                    //       content: Text(
-                                    //           'Invalid email or password. Please try again.'),
-                                    //       actions: [
-                                    //         TextButton(
-                                    //           onPressed: () {
-                                    //             Navigator.pop(context);
-                                    //           },
-                                    //           child: Text('OK'),
-                                    //         ),
-                                    //       ],
-                                    //     ),
-                                    //   );
-                                    // }
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.red,
-                                    foregroundColor: Colors.white,
-                                  ),
-                                  child: const Text('Login'),
-                                ),
+                                    onPressed: _signIn,
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.red,
+                                        foregroundColor: Colors.white),
+                                    child: const Text('Login')),
                               ),
                               ElevatedButton(
                                   onPressed: () {
@@ -164,5 +149,34 @@ class _Login extends State<Login> {
                 ),
               ),
             )));
+  }
+
+  void _signIn() async {
+    String email = emailController.text;
+    String password = passwordController.text;
+
+    setState(() {
+      emailError = email.isEmpty ? "Email tidak boleh kosong" : null;
+      passwordError = password.isEmpty ? "Password tidak boleh kosong" : null;
+    });
+
+    if (emailError == null && passwordError == null) {
+      User? user = await _auth.Login(email, password);
+
+      if (user != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Berhasil masuk')),
+        );
+
+        print("Berhasil");
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (BuildContext context) {
+            return const Dashboard(title: 'HealthSis');
+          }),
+        );
+      }
+    }
   }
 }
