@@ -1,5 +1,5 @@
 {
     "java.compile.nullAnalysis.mode": "automatic",
     "java.configuration.updateBuildConfiguration": "interactive",
-    "dart.flutterSdkPath": "D:\\flutter"
+    "dart.flutterSdkPath": "D:\\Iqnaz\\MobPro\\TP1\\flutter"
 }
