@@ -118,7 +118,7 @@ class _Artikel extends State<Artikel> {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: const Text('Konfirmasi Delete'),
-                          content: const Text('Apakah Anda yakin ingin hapus?'),
+                          content: const Text('Apakah Anda yakin ingin hapus konten ini?'),
                           actions: [
                             TextButton(
                               onPressed: () {
