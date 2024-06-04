@@ -75,10 +75,19 @@ class _EditProfile extends State<EditProfile> {
         statusError == null &&
         noteError == null &&
         dateError == null) {
+      String? imageUrl;
       if (_imageFile != null) {
-        String imageUrl = await uploadImage(_imageFile!);
-        updateUserData(uid, username, phone, status, date!, note, imageUrl);
+        imageUrl = await uploadsImage(_imageFile!);
+      } else {
+        DocumentSnapshot<Map<String, dynamic>> userDataSnapshot =
+            await userDataFuture;
+        Map<String, dynamic>? userData = userDataSnapshot.data();
+        if (userData != null) {
+          imageUrl = userData['photo'];
+        }
       }
+
+      updateUserData(uid, username, phone, status, date!, note, imageUrl ?? '');
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Data berhasil disimpan')),
@@ -207,9 +216,8 @@ class _EditProfile extends State<EditProfile> {
                                         ),
                                         onTap: () {
                                           Navigator.pop(context);
-                                          setState(() {
-                                            _imageFile = null;
-                                          });
+                                          DeletePhotos(uid);
+                                          
                                         },
                                       ),
                                     ],
@@ -226,7 +234,8 @@ class _EditProfile extends State<EditProfile> {
                                   ? FileImage(_imageFile!)
                                   : userData['photo'] != null
                                       ? NetworkImage(userData['photo'])
-                                      : const AssetImage('images/Default.jpg')
+                                      : const NetworkImage(
+                                              'https://firebasestorage.googleapis.com/v0/b/mobprotubes-1a30b.appspot.com/o/Default.jpg?alt=media&token=766800c7-998d-48a9-84de-58f07b65d9b8')
                                           as ImageProvider<Object>?,
                             ),
                           )),

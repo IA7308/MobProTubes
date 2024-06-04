@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tubes/Model/timelinee.dart';
@@ -41,9 +43,18 @@ class Timeline extends StatefulWidget {
 }
 
 class _Timeline extends State<Timeline> {
+  late Future<DocumentSnapshot<Map<String, dynamic>>> userDataFuture;
+  late String uid; // Variabel untuk menyimpan UID pengguna yang login
+
   @override
   void initState() {
     super.initState();
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      uid = user.uid;
+      userDataFuture =
+          getUserData(uid); // Panggil fungsi untuk mendapatkan data pengguna
+    }
     _timelineFuture = getTimelineStream();
   }
 
@@ -86,18 +97,19 @@ class _Timeline extends State<Timeline> {
                     //   child: Icon(Icons.person),
                     // ),
                     title: Row(
-                      children: [
-                        const Padding(
+                      children: <Widget> [
+                        Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8.0),
                           child: CircleAvatar(
                             radius: 15.0,
-                            child: Icon(Icons.person),
+                            backgroundImage: NetworkImage(data[index].photo),
                           ),
                         ),
                         // Title in the middle
                         Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
                               data[index].judul,
                               style: const TextStyle(
@@ -113,7 +125,8 @@ class _Timeline extends State<Timeline> {
                             updateLikeStatus(data[index]);
                           },
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Icon(
                               data[index].like
                                   ? Icons.favorite
@@ -127,7 +140,13 @@ class _Timeline extends State<Timeline> {
                     subtitle: Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 53.0, vertical: 5.0),
-                      child: Text(data[index].isi),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(data[index].nama, style: TextStyle(fontSize: 12,color: Colors.blueGrey),),
+                          Text(data[index].isi,),
+                        ],
+                      ),
                     ),
                     // trailing: GestureDetector(
                     //   onTap: () async {
@@ -222,8 +241,22 @@ class _Timeline extends State<Timeline> {
                           child: FloatingActionButton(
                               child: const Text('Post'),
                               onPressed: () async {
-                                insertTimeline('Iqnaz', JudulController.text,
-                                    SubJudulController.text, false);
+                                // Wait for userDataFuture to complete
+                                DocumentSnapshot<Map<String, dynamic>>
+                                    snapshot = await userDataFuture;
+
+                                // Access the data from the snapshot
+                                String username = snapshot
+                                        .data()?['username'] ??
+                                    '';
+                                String photo = snapshot
+                                        .data()?['photo'] ??
+                                    '';
+                                
+
+                                // Now you can use the username
+                                insertTimeline(username, JudulController.text,
+                                    SubJudulController.text, false, photo);
 
                                 JudulController.clear();
                                 SubJudulController.clear();

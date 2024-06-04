@@ -5,8 +5,9 @@ class Artikell {
   final String nama;
   final String judul;
   final String isi;
+  final String photo;
 
-  Artikell({required this.id, required this.nama, required this.judul, required this.isi});
+  Artikell({required this.id, required this.nama, required this.judul, required this.isi, required this.photo});
 
   factory Artikell.fromDocument(DocumentSnapshot doc) {
     return Artikell(
@@ -14,6 +15,7 @@ class Artikell {
       nama: doc['name'],
       judul: doc['judul'],
       isi: doc['isi'],
+      photo: doc['photo'],
     );
   }
 }

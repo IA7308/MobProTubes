@@ -35,7 +35,7 @@ void insertUser(String uid, String firstname, String lastname, String username,
     'age': '',
     'birthday': '',
     'note': '',
-    'photo': 'images/Default.jpg',
+    'photo': 'https://firebasestorage.googleapis.com/v0/b/mobprotubes-1a30b.appspot.com/o/Default.jpg?alt=media&token=766800c7-998d-48a9-84de-58f07b65d9b8',
   });
 }
 
@@ -45,10 +45,8 @@ Future<DocumentSnapshot<Map<String, dynamic>>> getUserData(String uid) async {
   return userSnapshot;
 }
 
-void updateUserData(String uid, String username, String status, String phone,
-    DateTime birthday, String note, String photo) {
-  CollectionReference users =
-      FirebaseFirestore.instance.collection('HealthSis');
+void updateUserData(String uid, String username, String phone, String status, DateTime birthday, String note, String photo) {
+  CollectionReference users = FirebaseFirestore.instance.collection('HealthSis');
 
   // Hitung umur berdasarkan tanggal lahir
   int age = DateTime.now().year - birthday.year;
@@ -65,28 +63,26 @@ void updateUserData(String uid, String username, String status, String phone,
     'username': username,
     'status': status,
     'phone': phone,
-    'age': age.toString(), // Simpan umur sebagai string
-    'birthday':
-        formattedBirthday, // Simpan tanggal lahir dalam format yang diinginkan
+    'age': '$age tahun', // Simpan umur sebagai string
+    'birthday': formattedBirthday, // Simpan tanggal lahir dalam format yang diinginkan
     'note': note,
     'photo': photo,
   });
 }
 
-Future<String> uploadImage(File imageFile) async {
-  String filename = basename(imageFile.path);
+void DeletePhotos(String uid) {
+  CollectionReference users = FirebaseFirestore.instance.collection('HealthSis');
 
-  Reference ref = FirebaseStorage.instance.ref().child(filename);
-  UploadTask task = ref.putFile(imageFile);
-  TaskSnapshot snapshot = await task.whenComplete(() => {});
-
-  return await snapshot.ref.getDownloadURL();
+  users.doc(uid).update({
+    'photo': 'https://firebasestorage.googleapis.com/v0/b/mobprotubes-1a30b.appspot.com/o/Default.jpg?alt=media&token=766800c7-998d-48a9-84de-58f07b65d9b8',
+  });
 }
 
-void insertTimeline(String name, String judul, String isi, bool like) {
+
+void insertTimeline(String name, String judul, String isi, bool like, String photo) {
   CollectionReference collReff =
       FirebaseFirestore.instance.collection('Timeline');
-  collReff.add({'name': name, 'judul': judul, 'isi': isi, 'like': like});
+  collReff.add({'name': name, 'judul': judul, 'isi': isi, 'like': like, 'photo' : photo});
 }
 
 void deleteTimeline(Timelinee entry) {
@@ -149,13 +145,14 @@ Future<File?> getImage() async {
 
 //ARTIKEL CRUD
 
-void insertArtikel(String name, String judul, String isi) {
+void insertArtikel(String name, String judul, String isi, String photo) {
   CollectionReference collReff =
       FirebaseFirestore.instance.collection('Artikel');
   collReff.add({
     'name': name,
     'judul': judul,
     'isi': isi,
+    'photo': photo,
   });
 }
 

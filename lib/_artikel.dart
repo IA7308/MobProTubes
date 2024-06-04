@@ -1,16 +1,14 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tubes/Model/Artikell.dart';
 import 'package:flutter_tubes/_artikelMain.dart';
 import 'package:flutter_tubes/_sidebar.dart';
 import 'package:flutter_tubes/main.dart';
 
-List<String> Judul = [];
-List<String> SubJudul = [];
 TextEditingController JudulController = TextEditingController();
 TextEditingController SubJudulController = TextEditingController();
-
-
 
 late Stream<List<Artikell>> artikelFuture;
 
@@ -46,11 +44,20 @@ class Artikel extends StatefulWidget {
 }
 
 class _Artikel extends State<Artikel> {
+  late Future<DocumentSnapshot<Map<String, dynamic>>> userDataFuture;
+  late String uid;
   String? imagepath;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      uid = user.uid;
+      userDataFuture =
+          getUserData(uid); // Panggil fungsi untuk mendapatkan data pengguna
+    }
     artikelFuture = getArtikellStream();
   }
 
@@ -82,20 +89,23 @@ class _Artikel extends State<Artikel> {
           return ListView.builder(
             itemCount: articles.length,
             itemBuilder: (context, index) {
-              var article = articles[index];
               return Card(
                 child: ListTile(
-                  leading: Image.asset('images/Dashboard.png'),
-                  title: Text(article.judul),
-                  subtitle: Text(article.judul),
+                  leading: CircleAvatar(
+                    backgroundImage: NetworkImage(articles[index].photo),
+                  ),
+                  title: Text(articles[index].judul),
+                  subtitle: Text(articles[index].judul),
                   trailing: ElevatedButton(
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => IsiArtikel(
-                            judul: article.judul,
-                            subJudul: article.judul,
+                            nama: articles[index].nama,
+                            judul: articles[index].judul,
+                            subJudul: articles[index].isi,
+                            imagepath: articles[index].photo,
                           ),
                         ),
                       );
@@ -185,20 +195,12 @@ class _Artikel extends State<Artikel> {
                       Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: ElevatedButton(
-                            child: const Text('SignInAnonyms'),
-                            onPressed: () async {
-                              // AuthServices;
-                            },
-                          )),
-                      Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: ElevatedButton(
                             child: const Text('UploadGambar'),
                             onPressed: () async {
                               File? file = await getImage();
                               imagepath = await uploadsImage(file!);
-
-                              setState(() {});
+                              setState(() {
+                              });
                             },
                           )),
                       Padding(
@@ -223,13 +225,14 @@ class _Artikel extends State<Artikel> {
                         child: Center(
                           child: FloatingActionButton(
                               child: const Text('Post'),
-                              onPressed: () {
-                                insertArtikel('iqnas', JudulController.text,
-                                    SubJudulController.text);
-                                setState(() {
-                                  Judul.add(JudulController.text);
-                                  SubJudul.add(SubJudulController.text);
-                                });
+                              onPressed: () async {
+                                DocumentSnapshot<Map<String, dynamic>>
+                                    snapshot = await userDataFuture;
+                                String username =
+                                    snapshot.data()?['username'] ?? '';
+
+                                insertArtikel(username, JudulController.text,
+                                    SubJudulController.text, imagepath!);
                                 JudulController.clear();
                                 SubJudulController.clear();
                                 Navigator.pop(context);

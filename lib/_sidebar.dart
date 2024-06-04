@@ -73,7 +73,7 @@ class _SidebarState extends State<Sidebar> {
                         style: TextStyle(color: Colors.black)),
                     currentAccountPicture: CircleAvatar(
                       radius: 60,
-                      backgroundImage: AssetImage('${userData['photo']}'),
+                      backgroundImage: NetworkImage('${userData['photo']}'),
                     ),
                     decoration: BoxDecoration(
                       color: Color.fromARGB(255, 255, 169, 154),
