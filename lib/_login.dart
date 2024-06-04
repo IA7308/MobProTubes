@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_tubes/_dashboard.dart';
 import 'package:flutter_tubes/_register.dart';
 import 'package:flutter_tubes/firebase_auth_services.dart';
@@ -114,8 +115,8 @@ class _Login extends State<Login> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 30.0),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                               Padding(
                                 padding:
@@ -127,21 +128,40 @@ class _Login extends State<Login> {
                                         foregroundColor: Colors.white),
                                     child: const Text('Login')),
                               ),
-                              ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) {
-                                        return const Register(
-                                            title: 'HealthSis');
-                                      }),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.red,
-                                      foregroundColor: Colors.white),
-                                  child: const Text('Daftar')),
+                              //   ElevatedButton(
+                              //       onPressed: () {
+                              //         Navigator.push(
+                              //           context,
+                              //           MaterialPageRoute(
+                              //               builder: (BuildContext context) {
+                              //             return const Register(
+                              //                 title: 'HealthSis');
+                              //           }),
+                              //         );
+                              //       },
+                              //       style: ElevatedButton.styleFrom(
+                              //           backgroundColor: Colors.red,
+                              //           foregroundColor: Colors.white),
+                              //       child: const Text('Daftar')),
+
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) {
+                                          return const Register(
+                                              title: 'HealthSis');
+                                        }),
+                                      );
+                                },
+                                child: Text(
+                                  'Belum mempunyai akun? Daftar',
+                                  style: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                ),
+                              ),
                             ]),
                       ),
                     ],
