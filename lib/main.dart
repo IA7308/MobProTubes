@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_tubes/Model/menudiett.dart';
 import 'package:path/path.dart' as path;
 import 'package:intl/intl.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -194,6 +195,47 @@ Stream<List<Artikell>> getArtikellStream() {
       FirebaseFirestore.instance.collection('Artikel');
   return collReff.snapshots().map((QuerySnapshot querySnapshot) {
     return querySnapshot.docs.map((doc) => Artikell.fromDocument(doc)).toList();
+  });
+}
+
+//Menu Diet CRUD
+
+void insertMenuDiet(String nama, String namaMakanan, String kalori, String deskripsi, String jenisMakanan, String photo) {
+  CollectionReference collReff =
+      FirebaseFirestore.instance.collection('MenuDiet');
+  collReff.add({
+    'namaPembuat': nama,
+    'jenisMakanan': jenisMakanan,
+    'namaMenu': namaMakanan,
+    'kalori': kalori,
+    'deskripsi': deskripsi,
+    'photo': photo,
+  });
+}
+
+void deleteMenuDiet(Menudiett entry) {
+  CollectionReference collReff =
+      FirebaseFirestore.instance.collection('MenuDiet');
+  collReff.doc(entry.id).delete();
+}
+
+void updateMenuDiet(String docId, String namaMakanan, String kalori, String deskripsi, String jenisMakanan, String photo) {
+  CollectionReference collReff =
+      FirebaseFirestore.instance.collection('MenuDiet');
+  collReff.doc(docId).update({
+    'jenisMakanan': jenisMakanan,
+    'namaMenu': namaMakanan,
+    'kalori': kalori,
+    'deskripsi': deskripsi,
+    'photo': photo,
+  });
+}
+
+Stream<List<Menudiett>> getMDStream() {
+  CollectionReference collReff =
+      FirebaseFirestore.instance.collection('MenuDiet');
+  return collReff.snapshots().map((QuerySnapshot querySnapshot) {
+    return querySnapshot.docs.map((doc) => Menudiett.fromDocument(doc)).toList();
   });
 }
 

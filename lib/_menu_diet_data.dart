@@ -6,9 +6,10 @@ class IsiDataMenu extends StatelessWidget {
   final String subJudul;
   final String penjelasan;
   final String chef;
-  final int kalori;
+  final String kalori;
+  final String? imagepath;
 
-  const IsiDataMenu({super.key, required this.judul, required this.subJudul, required this.penjelasan, required this.chef, required this.kalori});
+  const IsiDataMenu({super.key, required this.judul, required this.subJudul, required this.penjelasan, required this.chef, required this.kalori, required this.imagepath});
 
   @override
   Widget build(BuildContext context) {
@@ -26,30 +27,46 @@ class IsiDataMenu extends StatelessWidget {
           ),
         ],
       ),
-      drawer: const Sidebar(selectedIndex: 1,),
+      drawer: const Sidebar(
+        selectedIndex: 1,
+      ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(
-              judul,
-              style: const TextStyle(fontSize: 24),
+            Container(
+              width: 500,
+              height: 200,
+              decoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  border: Border.all(color: Colors.black),
+                  image: DecorationImage(
+                    image: NetworkImage(imagepath!),
+                    fit: BoxFit.cover,
+                  )),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                judul, // Nama Makanan
+                style: const TextStyle(fontSize: 24),
+              ),
             ),
             Text(
-              subJudul,
-              style: const TextStyle(fontSize: 18),
+              chef, //Nama Pembuat 
+              style: TextStyle(fontSize: 12),
             ),
             Text(
-              penjelasan,
-              style: const TextStyle(fontSize: 18),
+              subJudul, //Jenis Makanan 
+              style: TextStyle(fontSize: 12),
             ),
-            Text(
-              chef,
-              style: const TextStyle(fontSize: 18),
-            ),
-            Text(
-              '$kalori',
-              style: const TextStyle(fontSize: 18),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                penjelasan, //Deskripsi
+                style: const TextStyle(fontSize: 18),
+              ),
             ),
           ],
         ),
