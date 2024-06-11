@@ -1,8 +1,13 @@
+import 'dart:math';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_tubes/_menudietajah.dart';
 import 'package:flutter_tubes/_sidebar.dart';
-
-
+import 'package:flutter_tubes/_menu_diet.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -18,6 +23,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
+      
       home: const Dashboard(title: 'HealthSis'),
       debugShowCheckedModeBanner: false,
     );
@@ -34,6 +40,7 @@ class Dashboard extends StatefulWidget {
 }
 
 class _Dashboard extends State<Dashboard> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,7 +70,8 @@ class _Dashboard extends State<Dashboard> {
                     color: Colors.red,
                     child: Stack(
                       children: <Widget>[
-                        Image.asset('images/HealthPeople.jpg'),
+                        Image.asset('images/Foto_1.jpg'),
+                        Text('')
                       ],
                     )
                   ),
@@ -72,7 +80,7 @@ class _Dashboard extends State<Dashboard> {
                     color: Colors.blue,
                     child: Stack(
                       children: <Widget>[
-                        Image.asset('images/Dashboard.png')
+                        Image.asset('images/Foto_2.jpg')
                       ], 
                     )
                   ),
@@ -81,41 +89,107 @@ class _Dashboard extends State<Dashboard> {
                     color: Colors.green,
                     child: Stack(
                       children: <Widget>[
-                        Image.asset('images/HealthSIs.jpg')
+                        Image.asset('images/Foto_3.jpg')
                       ], 
                     )
                   ),
                 ]),
             const SizedBox(
-              height: 100.0,
+              height: 40,
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 50, vertical: 70.0),
-              child: Center(
-                child: Column(
-                  children: <Widget>[
-                    Text(
-                      'Hi Sis,',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: 'Times New Roman',
-                        fontSize: 30.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      'Selamat Datang di HealthSis',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: 'Times New Roman',
-                        fontSize: 30.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+          Container(
+            child: Text('Food Recommendation',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20.0,
+            ),
+            ) ,
+          ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: ListTile(
+                  leading: Image.asset('images/Food_6.jpg',
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.cover,
+                  ),
+                  title: Text('Vegan',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  ),
+                 subtitle: Text('For Vegetarian'),
+                 trailing: ElevatedButton(
+                  onPressed: () {
+                     Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const menudiet(title: 'Vegan')
+                                          ));
+                  },
+                  style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  ),
+                  child: Text('View More'),
+                 ),
                 ),
               ),
             ),
+          ),
+          SizedBox(
+             width: 10 ,
+          ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: ListTile(
+                  leading: Image.asset('images/Food_5.jpg',
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.cover,
+                  ),
+                  title: Text('Carnivor',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  ),
+                 subtitle: Text('For Meat Loves'),
+                 trailing: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const menudiet(title: "Carnivor")
+                                          ));
+                  },
+                  style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  ),
+                  child: Text('View More'),
+                 ),
+                ),
+              ),
+            ),
+          ),
           ],
         ),
       ),
