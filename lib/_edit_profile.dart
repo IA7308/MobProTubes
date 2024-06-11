@@ -55,6 +55,18 @@ class _EditProfile extends State<EditProfile> {
     }
   }
 
+  void _setDefaultImage() async {
+    try {
+      final defaultImg = await defaultImage(
+          'https://firebasestorage.googleapis.com/v0/b/mobprotubes-1a30b.appspot.com/o/Default.jpg?alt=media&token=766800c7-998d-48a9-84de-58f07b65d9b8');
+      setState(() {
+        _imageFile = defaultImg;
+      });
+    } catch (e) {
+      print('Failed to load default image: $e');
+    }
+  }
+
   void _saveData() async {
     String username = _usernameController.text;
     String phone = _phoneController.text;
@@ -216,7 +228,8 @@ class _EditProfile extends State<EditProfile> {
                                         ),
                                         onTap: () {
                                           Navigator.pop(context);
-                                          DeletePhotos(uid);
+                                          // DeletePhotos(uid);
+                                          _setDefaultImage();
                                           
                                         },
                                       ),

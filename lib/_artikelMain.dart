@@ -51,7 +51,7 @@ class IsiArtikel extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                'judul',
+                judul,
                 style: const TextStyle(fontSize: 24),
               ),
             ),

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:path/path.dart';
+import 'package:path/path.dart' as path;
 import 'package:intl/intl.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +10,8 @@ import 'package:flutter_tubes/_page_awal.dart';
 import 'package:flutter_tubes/firebase_options.dart';
 import 'package:flutter_tubes/Model/timelinee.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -78,6 +80,20 @@ void DeletePhotos(String uid) {
   });
 }
 
+Future<File> defaultImage(String url) async {
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final directory = await getTemporaryDirectory();
+      final filePath = path.join(directory.path, path.basename(url));
+      final file = File(filePath);
+      await file.writeAsBytes(response.bodyBytes);
+      return file;
+    } else {
+      throw Exception('Failed to download image');
+    }
+  }
+
 
 void insertTimeline(String name, String judul, String isi, bool like, String photo) {
   CollectionReference collReff =
@@ -101,12 +117,13 @@ void updateLikeStatus(Timelinee entry) {
   }
 }
 
-void updateTimeline(String docId, String judul, String isi) {
+void updateTimeline(String docId, String judul, String isi, String photo) {
   CollectionReference collReff =
       FirebaseFirestore.instance.collection('Timeline');
   collReff.doc(docId).update({
     'judul': judul,
     'isi': isi,
+    'photo': photo,
   });
 }
 
@@ -122,7 +139,7 @@ Stream<List<Timelinee>> getTimelineStream() {
 
 //Upload Gambar
 Future<String> uploadsImage(File imageName) async {
-  String filename = basename(imageName.path);
+  String filename = path.basename(imageName.path);
 
   FirebaseStorage storage = FirebaseStorage.instance;
   Reference ref = storage.ref().child(filename);
@@ -162,12 +179,13 @@ void deleteArtikel(Artikell entry) {
   collReff.doc(entry.id).delete();
 }
 
-void updateArtikel(String docId, String judul, String isi) {
+void updateArtikel(String docId, String judul, String isi, String photo) {
   CollectionReference collReff =
       FirebaseFirestore.instance.collection('Artikel');
   collReff.doc(docId).update({
     'judul': judul,
     'isi': isi,
+    'photo': photo,
   });
 }
 

@@ -97,7 +97,7 @@ class _Timeline extends State<Timeline> {
                     //   child: Icon(Icons.person),
                     // ),
                     title: Row(
-                      children: <Widget> [
+                      children: <Widget>[
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8.0),
                           child: CircleAvatar(
@@ -143,8 +143,14 @@ class _Timeline extends State<Timeline> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(data[index].nama, style: TextStyle(fontSize: 12,color: Colors.blueGrey),),
-                          Text(data[index].isi,),
+                          Text(
+                            data[index].nama,
+                            style:
+                                TextStyle(fontSize: 12, color: Colors.blueGrey),
+                          ),
+                          Text(
+                            data[index].isi,
+                          ),
                         ],
                       ),
                     ),
@@ -159,34 +165,105 @@ class _Timeline extends State<Timeline> {
                     //     color: data[index].like ? Colors.red : null,
                     //   ),
                     // ),
-                    onLongPress: () {
-                      showDialog(
+                    onTap: () async {
+                      DocumentSnapshot<Map<String, dynamic>> snapshot =
+                          await userDataFuture;
+
+                      String username = snapshot.data()?['username'] ?? '';
+                      String photo = snapshot.data()?['photo'] ?? '';
+
+                      if (data[index].nama == username) {
+                        JudulController.text = data[index].judul;
+                        SubJudulController.text = data[index].isi;
+                        showDialog(
                           context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text('konfirmasi Delete'),
-                              content:
-                                  const Text('Apakah anda yakin ingin hapus?'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () async {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('Tidak'),
-                                ),
-                                TextButton(
-                                  onPressed: () async {
-                                    deleteTimeline(data[index]);
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text(
-                                    'Ya',
-                                    style: TextStyle(color: Colors.red),
+                          builder: (context) {
+                            return Dialog(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  const Padding(
+                                    padding: EdgeInsets.all(3.0),
+                                    child: Text(
+                                      'Edit Timeline',
+                                      style: TextStyle(fontSize: 32.0),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                  Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: TextField(
+                                      controller: JudulController,
+                                      decoration: const InputDecoration(
+                                          border: OutlineInputBorder(),
+                                          labelText: 'Judul'),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: TextField(
+                                      controller: SubJudulController,
+                                      decoration: const InputDecoration(
+                                          border: OutlineInputBorder(),
+                                          labelText: 'Apa Yang Anda Pikirkan?'),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Center(
+                                      child: FloatingActionButton(
+                                          child: const Text('Update'),
+                                          onPressed: () async {
+
+                                            updateTimeline(data[index].id, JudulController.text, SubJudulController.text, photo);
+                                            JudulController.clear();
+                                            SubJudulController.clear();
+
+                                            Navigator.pop(context);
+                                          }),
+                                    ),
+                                  )
+                                ],
+                              ),
                             );
-                          });
+                          },
+                        );
+                      }
+                    },
+                    onLongPress: () async {
+                      DocumentSnapshot<Map<String, dynamic>> snapshot =
+                          await userDataFuture;
+
+                      String username = snapshot.data()?['username'] ?? '';
+                      if (data[index].nama == username) {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('konfirmasi Delete'),
+                                content: const Text(
+                                    'Apakah anda yakin ingin hapus?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () async {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('Tidak'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () async {
+                                      deleteTimeline(data[index]);
+
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text(
+                                      'Ya',
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            });
+                      }
                     },
                   );
                 },
@@ -246,13 +323,9 @@ class _Timeline extends State<Timeline> {
                                     snapshot = await userDataFuture;
 
                                 // Access the data from the snapshot
-                                String username = snapshot
-                                        .data()?['username'] ??
-                                    '';
-                                String photo = snapshot
-                                        .data()?['photo'] ??
-                                    '';
-                                
+                                String username =
+                                    snapshot.data()?['username'] ?? '';
+                                String photo = snapshot.data()?['photo'] ?? '';
 
                                 // Now you can use the username
                                 insertTimeline(username, JudulController.text,

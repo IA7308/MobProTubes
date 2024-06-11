@@ -112,34 +112,162 @@ class _Artikel extends State<Artikel> {
                     },
                     child: const Text('More'),
                   ),
-                  onLongPress: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('Konfirmasi Delete'),
-                          content: const Text('Apakah Anda yakin ingin hapus konten ini?'),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text('Tidak'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                deleteArtikel(articles[index]);
-                                Navigator.pop(context);
-                              },
-                              child: const Text(
-                                'Ya',
-                                style: TextStyle(color: Colors.red),
+                  onTap: () async {
+                    DocumentSnapshot<Map<String, dynamic>> snapshot =
+                        await userDataFuture;
+
+                    String username = snapshot.data()?['username'] ?? '';
+
+                    if (articles[index].nama == username) {
+                      JudulController.text = articles[index].judul;
+                      SubJudulController.text = articles[index].isi;
+                      imagepath = articles[index].photo;
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return Dialog(
+                            child: SingleChildScrollView(
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    const Padding(
+                                      padding: EdgeInsets.all(3.0),
+                                      child: Text(
+                                        'Edit Artikel',
+                                        style: TextStyle(fontSize: 32.0),
+                                      ),
+                                    ),
+                                    Container(
+                                      child: Center(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Container(
+                                              width: 200,
+                                              height: 200,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.rectangle,
+                                                border: Border.all(
+                                                    color: Colors.black),
+                                                image: imagepath != null
+                                                    ? DecorationImage(
+                                                        image: NetworkImage(
+                                                            imagepath!),
+                                                        fit: BoxFit.cover,
+                                                      )
+                                                    : null,
+                                              ),
+                                              child: imagepath == null
+                                                  ? const Center(
+                                                      child: Text(
+                                                          'No image selected'),
+                                                    )
+                                                  : null,
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: ElevatedButton(
+                                        child: const Text('Upload Gambar'),
+                                        onPressed: () async {
+                                          File? file = await getImage();
+                                          imagepath = await uploadsImage(file!);
+                                          setState(() {});
+                                        },
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: TextField(
+                                        controller: JudulController,
+                                        decoration: const InputDecoration(
+                                          border: OutlineInputBorder(),
+                                          labelText: 'Judul',
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: TextField(
+                                        controller: SubJudulController,
+                                        decoration: const InputDecoration(
+                                          border: OutlineInputBorder(),
+                                          labelText: 'Apa Yang Anda Pikirkan?',
+                                        ),
+                                        maxLines:
+                                            null, // Makes the TextField multiline
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: Center(
+                                        child: ElevatedButton(
+                                          child: const Text('Update'),
+                                          onPressed: () async {
+                                            // Replace 'articles[index].id' with the actual ID
+                                            updateArtikel(
+                                                articles[index].id,
+                                                JudulController.text,
+                                                SubJudulController.text,
+                                                imagepath!);
+                                            JudulController.clear();
+                                            SubJudulController.clear();
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ],
-                        );
-                      },
-                    );
+                          );
+                        },
+                      );
+                    }
+                  },
+                  onLongPress: () async {
+                    DocumentSnapshot<Map<String, dynamic>> snapshot =
+                        await userDataFuture;
+
+                    String username = snapshot.data()?['username'] ?? '';
+
+                    if (articles[index].nama == username) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Konfirmasi Delete'),
+                            content: const Text(
+                                'Apakah Anda yakin ingin hapus konten ini?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Tidak'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  deleteArtikel(articles[index]);
+                                  Navigator.pop(context);
+                                },
+                                child: const Text(
+                                  'Ya',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
                   },
                 ),
               );
@@ -199,8 +327,7 @@ class _Artikel extends State<Artikel> {
                             onPressed: () async {
                               File? file = await getImage();
                               imagepath = await uploadsImage(file!);
-                              setState(() {
-                              });
+                              setState(() {});
                             },
                           )),
                       Padding(
