@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_tubes/_menudietajah.dart';
 import 'package:flutter_tubes/_sidebar.dart';
 import 'package:flutter_tubes/_menu_diet.dart';
+import 'package:flutter_tubes/main.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -40,13 +41,48 @@ class Dashboard extends StatefulWidget {
 }
 
 class _Dashboard extends State<Dashboard> {
+  late Future<DocumentSnapshot<Map<String, dynamic>>> userDataFuture;
+  late String uid; // Variabel untuk menyimpan UID pengguna yang login
+  
+
+  @override
+  void initState() {
+    super.initState();
+    // Dapatkan UID pengguna yang login dari Firebase Auth
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      uid = user.uid;
+      userDataFuture = getUserData(uid); // Panggil fungsi untuk mendapatkan data pengguna
+    }
+  }
+
+Future<String> getName() async{
+  DocumentSnapshot<Map<String, dynamic>> snapshot =
+                          await userDataFuture;
+
+                       String username = snapshot.data()?['username'] ?? '';
+                       return username;
+}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 255, 169, 154),
-        title: Text(widget.title),
+        title: FutureBuilder<String>(
+        future: getName(),
+        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Text('Loading...');
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else if (snapshot.hasData) {
+            return Text('Hello, ${snapshot.data}');
+          } else {
+            return Text('Hello');
+          }
+        },
+      ),
       ),
       drawer: const Sidebar(selectedIndex: 0,),
       body: Padding(
