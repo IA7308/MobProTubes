@@ -282,91 +282,103 @@ class _Artikel extends State<Artikel> {
               context: context,
               builder: (context) {
                 return Dialog(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      const Padding(
-                        padding: EdgeInsets.all(3.0),
-                        child: Text(
-                          'Add Artikel',
-                          style: TextStyle(fontSize: 32.0),
-                        ),
-                      ),
-                      Container(
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Container(
-                                width: 200,
-                                height: 200,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.rectangle,
-                                  border: Border.all(color: Colors.black),
-                                  image: imagepath != null
-                                      ? DecorationImage(
-                                          image: NetworkImage(imagepath!),
-                                          fit: BoxFit.cover,
-                                        )
-                                      : null,
-                                ),
-                                child: imagepath == null
-                                    ? const Center(
-                                        child: Text('No image selected'),
-                                      )
-                                    : null,
-                              )
-                            ],
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          const Padding(
+                            padding: EdgeInsets.all(3.0),
+                            child: Text(
+                              'Edit Artikel',
+                              style: TextStyle(fontSize: 32.0),
+                            ),
                           ),
-                        ),
-                      ),
-                      Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: ElevatedButton(
-                            child: const Text('UploadGambar'),
-                            onPressed: () async {
-                              File? file = await getImage();
-                              imagepath = await uploadsImage(file!);
-                              setState(() {});
-                            },
-                          )),
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: TextField(
-                          controller: JudulController,
-                          decoration: const InputDecoration(
-                              border: OutlineInputBorder(), labelText: 'Judul'),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: TextField(
-                          controller: SubJudulController,
-                          decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Apa Yang Anda Pikirkan?'),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Center(
-                          child: FloatingActionButton(
-                              child: const Text('Post'),
+                          Container(
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Container(
+                                    width: 200,
+                                    height: 200,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.rectangle,
+                                      border: Border.all(color: Colors.black),
+                                      image: imagepath != null
+                                          ? DecorationImage(
+                                              image: NetworkImage(imagepath!),
+                                              fit: BoxFit.cover,
+                                            )
+                                          : null,
+                                    ),
+                                    child: imagepath == null
+                                        ? const Center(
+                                            child: Text('No image selected'),
+                                          )
+                                        : null,
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: ElevatedButton(
+                              child: const Text('Upload Gambar'),
                               onPressed: () async {
-                                DocumentSnapshot<Map<String, dynamic>>
-                                    snapshot = await userDataFuture;
-                                String username =
-                                    snapshot.data()?['username'] ?? '';
+                                File? file = await getImage();
+                                imagepath = await uploadsImage(file!);
+                                setState(() {});
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: TextField(
+                              controller: JudulController,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'Judul',
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: TextField(
+                              controller: SubJudulController,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'Apa Yang Anda Pikirkan?',
+                              ),
+                              maxLines: null, // Makes the TextField multiline
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Center(
+                              child: ElevatedButton(
+                                child: const Text('Update'),
+                                onPressed: () async {
+                                  DocumentSnapshot<Map<String, dynamic>>
+                                      snapshot = await userDataFuture;
 
-                                insertArtikel(username, JudulController.text,
-                                    SubJudulController.text, imagepath!);
-                                JudulController.clear();
-                                SubJudulController.clear();
-                                Navigator.pop(context);
-                              }),
-                        ),
-                      )
-                    ],
+                                  String username =
+                                      snapshot.data()?['username'] ?? '';
+                                      
+                                  insertArtikel(username, JudulController.text,
+                                      SubJudulController.text, imagepath!);
+                                  JudulController.clear();
+                                  SubJudulController.clear();
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 );
               },
