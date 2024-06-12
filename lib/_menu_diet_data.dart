@@ -28,7 +28,7 @@ class IsiDataMenu extends StatelessWidget {
         ],
       ),
       drawer: const Sidebar(
-        selectedIndex: 1,
+        selectedIndex: 2,
       ),
       body: Center(
         child: Column(

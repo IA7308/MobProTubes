@@ -17,55 +17,59 @@ class IsiArtikel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 255, 169, 154),
-        title: Text(judul),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: () {
-              // Handle your filter action here
-            },
-          ),
-        ],
-      ),
-      drawer: const Sidebar(
-        selectedIndex: 1,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              width: 500,
-              height: 200,
-              decoration: BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  border: Border.all(color: Colors.black),
-                  image: DecorationImage(
-                    image: NetworkImage(imagepath!),
-                    fit: BoxFit.cover,
-                  )),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                judul,
-                style: const TextStyle(fontSize: 24),
-              ),
-            ),
-            Text(nama, style: TextStyle(fontSize: 12),),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                subJudul,
-                style: const TextStyle(fontSize: 18),
-              ),
+        appBar: AppBar(
+          backgroundColor: const Color.fromARGB(255, 255, 169, 154),
+          title: Text(judul),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.filter_list),
+              onPressed: () {
+                // Handle your filter action here
+              },
             ),
           ],
         ),
-      ),
-    );
+        drawer: const Sidebar(
+          selectedIndex: 1,
+        ),
+        body: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  width: 500,
+                  height: 200,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      border: Border.all(color: Colors.black),
+                      image: DecorationImage(
+                        image: NetworkImage(imagepath!),
+                        fit: BoxFit.cover,
+                      )),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    judul,
+                    style: const TextStyle(fontSize: 24),
+                  ),
+                ),
+                Text(
+                  nama,
+                  style: TextStyle(fontSize: 12),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    subJudul,
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ));
   }
 }

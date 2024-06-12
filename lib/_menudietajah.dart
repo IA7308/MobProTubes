@@ -68,6 +68,7 @@ class _menudietajah extends State<menudiet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomSheet: Text('~Tahan untuk Hapus, Tekan untuk Edit~'),
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 255, 169, 154),
         title: Text(widget.title),
@@ -81,7 +82,7 @@ class _menudietajah extends State<menudiet> {
         ],
       ),
       drawer: const Sidebar(
-        selectedIndex: 1,
+        selectedIndex: 2,
       ),
       body: StreamBuilder<List<Menudiett>>(
         stream: menuDietFuture,

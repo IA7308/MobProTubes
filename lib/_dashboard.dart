@@ -70,7 +70,7 @@ class _Dashboard extends State<Dashboard> {
                     color: Colors.red,
                     child: Stack(
                       children: <Widget>[
-                        Image.asset('images/Foto_1.jpg'),
+                        Image.asset('images/Foto_1.png'),
                         Text('')
                       ],
                     )
@@ -80,7 +80,7 @@ class _Dashboard extends State<Dashboard> {
                     color: Colors.blue,
                     child: Stack(
                       children: <Widget>[
-                        Image.asset('images/Foto_2.jpg')
+                        Image.asset('images/Foto_2.png')
                       ], 
                     )
                   ),
@@ -89,7 +89,7 @@ class _Dashboard extends State<Dashboard> {
                     color: Colors.green,
                     child: Stack(
                       children: <Widget>[
-                        Image.asset('images/Foto_3.jpg')
+                        Image.asset('images/Foto_3.png')
                       ], 
                     )
                   ),

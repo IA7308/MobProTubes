@@ -61,6 +61,7 @@ class _Timeline extends State<Timeline> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomSheet: Text('~Tahan untuk Hapus, Tekan untuk Edit~'),
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 255, 169, 154),
         title: Text(widget.title),
@@ -318,6 +319,7 @@ class _Timeline extends State<Timeline> {
                           child: FloatingActionButton(
                               child: const Text('Post'),
                               onPressed: () async {
+                                
                                 // Wait for userDataFuture to complete
                                 DocumentSnapshot<Map<String, dynamic>>
                                     snapshot = await userDataFuture;

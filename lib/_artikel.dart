@@ -64,6 +64,7 @@ class _Artikel extends State<Artikel> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomSheet: Text('~Tahan untuk Hapus, Tekan untuk Edit~'),
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 255, 169, 154),
         title: Text(widget.title),
